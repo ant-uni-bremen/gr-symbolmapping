@@ -19,5 +19,10 @@ try:
 except ImportError:
     pass
 
+try:
+    from .symbolmapping_python import *
+except ImportError:
+    pass
+
 # import any pure python here
 #
