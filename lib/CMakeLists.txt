@@ -14,6 +14,7 @@ include(GrPlatform) #define LIB_SUFFIX
 list(APPEND symbolmapping_sources
     interleaver_impl.cc
     bit_interleaver.cc
+    symbol_mapper.cc
 )
 
 set(symbolmapping_sources "${symbolmapping_sources}" PARENT_SCOPE)

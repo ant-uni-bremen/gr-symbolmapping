@@ -4,7 +4,9 @@
 
 pybind11_add_module(symbolmapping_python
     ${CMAKE_SOURCE_DIR}/lib/bit_interleaver.cc
+    ${CMAKE_SOURCE_DIR}/lib/symbol_mapper.cc
     bit_interleaver_python.cc
+    symbol_mapper_python.cc
     python_bindings.cc
 )
 

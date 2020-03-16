@@ -15,10 +15,12 @@ namespace py = pybind11;
 
 
 void bind_bit_interleaver(py::module& m);
+void bind_symbol_mapper(py::module& m);
 
 
 PYBIND11_MODULE(symbolmapping_python, m) {
     bind_bit_interleaver(m);
+    bind_symbol_mapper(m);
 
 #ifdef VERSION_INFO
     m.attr("__version__") = VERSION_INFO;

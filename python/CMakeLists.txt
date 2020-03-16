@@ -31,5 +31,6 @@ add_subdirectory(bindings)
 include(GrTest)
 
 set(GR_TEST_TARGET_DEPS gnuradio-symbolmapping)
-set(GR_TEST_PYTHON_DIRS ${CMAKE_BINARY_DIR}/swig)
+set(GR_TEST_PYTHON_DIRS ${CMAKE_BINARY_DIR}/swig ${CMAKE_BINARY_DIR}/python/bindings)
 GR_ADD_TEST(qa_interleaver ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_interleaver.py)
+GR_ADD_TEST(qa_python_bindings ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_python_bindings.py)

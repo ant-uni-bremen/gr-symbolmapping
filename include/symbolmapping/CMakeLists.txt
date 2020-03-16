@@ -12,5 +12,6 @@
 install(FILES
     api.h
     bit_interleaver.h
+    symbol_mapper.h
     interleaver.h DESTINATION include/symbolmapping
 )
