@@ -7,5 +7,7 @@
 #
 
 install(FILES
-    symbolmapping_interleaver.block.yml DESTINATION share/gnuradio/grc/blocks
+    symbolmapping_interleaver.block.yml
+    symbolmapping_symbol_mapper_bc.block.yml
+    symbolmapping_symbol_demapper_cf.block.yml DESTINATION share/gnuradio/grc/blocks
 )

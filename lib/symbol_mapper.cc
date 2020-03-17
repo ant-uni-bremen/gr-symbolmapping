@@ -6,7 +6,6 @@
  */
 
 #include <symbolmapping/symbol_mapper.h>
-#include "math.h"
 #include <volk/volk.h>
 #include <stdexcept>
 #include <iostream>
@@ -64,9 +63,8 @@ SymbolMapping::setConstellationType(std::string cstl_type){
         }
     }
     _cstl_type = ctype;
-    // if(_constellation){
-        setConstellationOrder(_constellation_order);
-    // }
+
+    setConstellationOrder(_constellation_order);
 }
 
 void
@@ -280,13 +278,6 @@ void SymbolMapping::calculate_ln_probabilities(float* ln_probs, const fcmplx* rx
                 ln_probs += _constellation_size;
             }
     }
-
-    // const float snr_lin = convert_snr_db2lin(snr_db);
-    // const float scaling_factor = -0.5f * snr_lin;
-    // for (unsigned i = 0; i < num_symbols; i++) {
-    //     calculate_symbol_ln_probabilities(ln_probs, rx_symbols[i], scaling_factor);
-    //     ln_probs += _constellation_size;
-    // }
 
     std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
     _ln_prob_calculation_duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();

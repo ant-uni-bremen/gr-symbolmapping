@@ -182,7 +182,7 @@ def calculate_llrs(log_probs, llrs=None):
     elif constellation_order is 6:
         return calculate_64qam_llrs(log_probs, llrs)
     else:
-        raise NotImplementedError('Constellation {} NOT IMPLEMENTED!'.format(constellation_order))
+        raise NotImplementedError('Constellation {:} NOT IMPLEMENTED!'.format(constellation_order))
 
 
 def qam16_map_demap_chain():

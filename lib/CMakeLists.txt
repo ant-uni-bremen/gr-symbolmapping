@@ -15,6 +15,8 @@ list(APPEND symbolmapping_sources
     interleaver_impl.cc
     bit_interleaver.cc
     symbol_mapper.cc
+    symbol_mapper_bc_impl.cc
+    symbol_demapper_cf_impl.cc
 )
 
 set(symbolmapping_sources "${symbolmapping_sources}" PARENT_SCOPE)

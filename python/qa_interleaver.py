@@ -30,8 +30,6 @@ class qa_interleaver(gr_unittest.TestCase):
 
         interleaveru = symbolmapping.interleaver_bb(interleaver_indices, False, True)
         self.assertEqual(interleaveru.output_multiple(), nbits)
-        import symbolmapping_python
-        s = symbolmapping_python.SymbolMapping()
 
     def test_002_unpacked(self):
         nframes = 5
