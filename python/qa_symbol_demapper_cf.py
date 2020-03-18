@@ -106,23 +106,34 @@ class qa_symbol_demapper_cf(gr_unittest.TestCase):
 
     def test_004_vector_snr_qpsk(self):
         nbits = 16 * 100
+        constellation_order = 2
+        self.verify_vector_snr(constellation_order, nbits)
+
+    def test_005_vector_snr_16qam(self):
+        nbits = 16 * 100
+        constellation_order = 4
+        self.verify_vector_snr(constellation_order, nbits)
+
+    def test_006_vector_snr_64qam(self):
+        nbits = 16 * 100
         constellation_order = 6
-        self.verify_scalar_snr(constellation_order, nbits)
+        self.verify_vector_snr(constellation_order, nbits)
 
     def verify_vector_snr(self, constellation_order, nbits):
         constellation, bits_rep = generate_gray_constellation(constellation_order)
         data = np.random.randint(0, 2, constellation_order * nbits).astype(np.uint8)
         symbols = map_to_constellation(data, constellation)
         
-        snr = 5.0
-        snr_step = .5
+        snr = np.arange(32, dtype=np.float) + 1.
+        snr_step = 2.5
         tags = []
         offsets = (0, 50, 400, 450, 800)
         last_offset = 0
         ref = np.array([], dtype=np.float32)
         for offset in offsets:
+            valuevector = pmt.init_f32vector(snr.size, snr.tolist())
             t = gr.tag_utils.python_to_tag((offset, pmt.string_to_symbol("snr"), 
-                                            pmt.from_float(snr)))
+                                            valuevector))
             tags.append(t)
             
             syms = symbols[last_offset:offset]

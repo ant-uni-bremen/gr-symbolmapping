@@ -39,7 +39,7 @@ def get_symbol_prob(rx, constellation):
     return p
 
 
-def calculate_log_probability_vector(rx, constellation, snr_db):
+def calculate_log_probability_vector_lin(rx, constellation, snr_lin):
     '''
     Gaussian noise assumption!
     (1. / np.sqrt(2 * np.pi * sigma_sq)) * np.exp(-np.abs(rx - constellation)**2 / (2 * sigma_sq))
@@ -47,10 +47,14 @@ def calculate_log_probability_vector(rx, constellation, snr_db):
     Prune constant factors and move to LOG domain -->
     -.5 * snr_lin * np.abs(rx - constellation) ** 2
     '''
-    snr_lin = db2lin(snr_db)
     pp = rx - constellation
     r = pp.real ** 2 + pp.imag ** 2
     return -1. * snr_lin * r
+
+
+def calculate_log_probability_vector(rx, constellation, snr_db):
+    snr_lin = db2lin(snr_db)
+    return calculate_log_probability_vector_lin(rx, constellation, snr_lin)
 
 
 def calculate_gaussian_probability(x, mu, variance):
@@ -116,9 +120,13 @@ def qpsk_map_demap_chain():
 
 
 def calculate_symbol_log_probabilities(symbols, constellation, snr_db):
+    if isinstance(snr_db, np.ndarray):
+        snr = np.tile(snr_db, int(np.ceil(symbols.size / snr_db.size)))[0:symbols.size]
+    else:
+        snr = np.full(symbols.size, db2lin(snr_db), dtype=np.float)
     log_probs = np.zeros((len(symbols), len(constellation)), dtype=float)
     for i, s in enumerate(symbols):
-        l_prob = calculate_log_probability_vector(s, constellation, snr_db)
+        l_prob = calculate_log_probability_vector_lin(s, constellation, snr[i])
         log_probs[i, :] = l_prob
     return log_probs
 

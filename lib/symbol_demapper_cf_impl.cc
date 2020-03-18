@@ -74,7 +74,7 @@ namespace gr {
     symbol_demapper_cf_impl::demap_llrs(float* out, const gr_complex* in, 
                                         const unsigned nitems)
     {
-      std::cout << "demap_llrs(.., nitems= " << nitems << ")\n";
+      // std::cout << "demap_llrs(.., nitems= " << nitems << ")\n";
       if(d_snrs_lin.size() < 1){
         d_mapper->demap_llrs(out, in, nitems, d_snr_db);
       }
@@ -82,6 +82,14 @@ namespace gr {
         const unsigned nin_frame = d_snrs_lin.size();
         const unsigned nout_frame = d_snrs_lin.size() * d_mapper->constellationOrder();
         const unsigned nframes = nitems / nin_frame;
+
+        // std::cout << "demap_llrs(.., nitems= " 
+        //           << nitems 
+        //           << ", snr_lin.size= "
+        //           << d_snrs_lin.size()
+        //           << ", nframes= "
+        //           << nframes
+        //           << ")\n";
         
         for(unsigned i = 0; i < nframes; ++i){
           d_mapper->demap_llrs_vec(out, in, d_snrs_lin.data(),
@@ -96,11 +104,16 @@ namespace gr {
 
     void symbol_demapper_cf_impl::handle_tag(const tag_t &tag)
     {
-      if(pmt::is_vector(tag.value)){
-        std::cout << "NOT IMPLEMENTED" << std::endl;
+      // std::cout << pmt::is_vector(tag.value) << ", " << pmt::is_f32vector(tag.value) << std::endl;
+      if(pmt::is_f32vector(tag.value)){
+        // std::cout << "Vector SNR" << std::endl;
+        auto vec = pmt::f32vector_elements(tag.value);
+        auto snrs = volk::vector<float>(vec.begin(), vec.end());
+        update_snr(snrs);
+        // std::cout << "Vector SNR go" << std::endl;
       }
       else{
-        std::cout << "update_snr: " << pmt::to_float(tag.value) << "\t@" << tag.offset << std::endl;
+        // std::cout << "update_snr: " << pmt::to_float(tag.value) << "\t@" << tag.offset << std::endl;
         update_snr(pmt::to_float(tag.value));
       }
     }
@@ -118,7 +131,7 @@ namespace gr {
       get_tags_in_range(tags, 0, nitems_read(0), 
                         nitems_read(0) + ninput_items,
                         tag_key);
-      std::cout << "nread: " << nitems_read(0) <<  ", nout: " << noutput_items << std::endl;
+      // std::cout << "nread: " << nitems_read(0) <<  ", nout: " << noutput_items << std::endl;
       if(tags.size() > 0){
         uint64_t last_offset = nitems_read(0);
         for(auto &tag: tags){
