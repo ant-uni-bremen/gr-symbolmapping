@@ -35,6 +35,7 @@ from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 import symbolmapping
+
 from gnuradio import qtgui
 
 class symbol_mapping_demo(gr.top_block, Qt.QWidget):
@@ -74,12 +75,13 @@ class symbol_mapping_demo(gr.top_block, Qt.QWidget):
         # Variables
         ##################################################
         self.samp_rate = samp_rate = 32000
+        self.constellation_order = constellation_order = 6
 
         ##################################################
         # Blocks
         ##################################################
-        self.symbolmapping_symbol_mapper_bc_0 = symbolmapping.symbol_mapper_bc(4, 'GRAY', True)
-        self.symbolmapping_symbol_demapper_cf_0 = symbolmapping.symbol_demapper_cf(4, 'GRAY')
+        self.symbolmapping_symbol_mapper_bc_0 = symbolmapping.symbol_mapper_bc(constellation_order, 'GRAY', True)
+        self.symbolmapping_symbol_demapper_cf_0 = symbolmapping.symbol_demapper_cf(constellation_order, 'GRAY')
         self.qtgui_time_sink_x_0 = qtgui.time_sink_f(
             1024, #size
             samp_rate, #samp_rate
@@ -196,6 +198,7 @@ class symbol_mapping_demo(gr.top_block, Qt.QWidget):
         self.connect((self.symbolmapping_symbol_mapper_bc_0, 0), (self.qtgui_const_sink_x_0, 0))
         self.connect((self.symbolmapping_symbol_mapper_bc_0, 0), (self.symbolmapping_symbol_demapper_cf_0, 0))
 
+
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "symbol_mapping_demo")
         self.settings.setValue("geometry", self.saveGeometry())
@@ -209,6 +212,14 @@ class symbol_mapping_demo(gr.top_block, Qt.QWidget):
         self.blocks_throttle_0.set_sample_rate(self.samp_rate)
         self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate)
 
+    def get_constellation_order(self):
+        return self.constellation_order
+
+    def set_constellation_order(self, constellation_order):
+        self.constellation_order = constellation_order
+
+
+
 
 
 def main(top_block_cls=symbol_mapping_demo, options=None):
@@ -219,7 +230,9 @@ def main(top_block_cls=symbol_mapping_demo, options=None):
     qapp = Qt.QApplication(sys.argv)
 
     tb = top_block_cls()
+
     tb.start()
+
     tb.show()
 
     def sig_handler(sig=None, frame=None):
@@ -235,9 +248,9 @@ def main(top_block_cls=symbol_mapping_demo, options=None):
     def quitting():
         tb.stop()
         tb.wait()
+
     qapp.aboutToQuit.connect(quitting)
     qapp.exec_()
-
 
 if __name__ == '__main__':
     main()
