@@ -40,7 +40,7 @@ class qa_symbol_mapper_bc(gr_unittest.TestCase):
 
     def test_001_init(self):
         for co in (5,7,9):
-            self.assertRaises(RuntimeError, symbolmapping.symbol_mapper_bc,
+            self.assertRaises((RuntimeError, TypeError), symbolmapping.symbol_mapper_bc,
                               co, "GRAY", False)
 
     def verify_constellation_unpacked(self, constellation_order, 
