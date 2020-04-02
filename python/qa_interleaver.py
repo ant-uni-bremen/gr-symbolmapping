@@ -10,6 +10,8 @@ from gnuradio import gr, gr_unittest
 from gnuradio import blocks
 import symbolmapping_swig as symbolmapping
 import numpy as np
+from interleaver_indices import create_interleaver_indices
+
 
 class qa_interleaver(gr_unittest.TestCase):
 
@@ -101,6 +103,28 @@ class qa_interleaver(gr_unittest.TestCase):
         nframes = 5
         nbits = 16 * 17
         interleaver_indices = np.random.permutation(nbits)
+
+        interleaver = symbolmapping.interleaver_ff(interleaver_indices, False, False)
+
+        data = np.random.normal(size=nbits * nframes).astype(np.float32)
+        # data = np.random.randint(0, 2, nbits * nframes)
+        ref = np.array([], dtype=data.dtype)
+        for f in np.reshape(data, (nframes, -1)):
+            ref = np.concatenate((ref, f[interleaver_indices]))
+        src = blocks.vector_source_f(ref)
+        snk = blocks.vector_sink_f()
+
+        self.tb.connect(src, interleaver, snk)
+        # set up fg
+        self.tb.run()
+        # # check data
+        res = np.array(snk.data())
+        self.assertTupleEqual(tuple(res), tuple(data))
+
+    def test_005_deinterleave_unpacked_float_lte_turbo(self):
+        nframes = 5
+        nbits = 16 * 17
+        interleaver_indices = create_interleaver_indices(nbits, 'turbo')
 
         interleaver = symbolmapping.interleaver_ff(interleaver_indices, False, False)
 

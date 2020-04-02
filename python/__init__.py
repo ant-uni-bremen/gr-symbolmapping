@@ -27,3 +27,4 @@ except ImportError:
 # import any pure python here
 #
 from .symbol_constellation import generate_constellation, map_to_constellation
+from .interleaver_indices import create_interleaver_indices
