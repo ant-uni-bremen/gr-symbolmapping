@@ -10,10 +10,8 @@ from gnuradio import gr, gr_unittest
 import symbolmapping_python as symbolmapping
 import numpy as np
 
-from ref_constellation import generate_gray_constellation
-from ref_constellation import generate_16qam_boronka_constellation
-from ref_constellation import generate_16qam_carson_constellation
-from ref_constellation import map_to_constellation
+from symbol_constellation import generate_constellation
+from symbol_constellation import map_to_constellation
 from symbol_demapper import calculate_symbol_log_probabilities
 from symbol_demapper import calculate_llrs
 from symbol_demapper import lin2db, db2lin
@@ -79,7 +77,7 @@ class qa_constellation(gr_unittest.TestCase):
     def test_001_generate_gray_valid(self):
         valid_constellation_orders = np.array([1, 2, 4, 6])
         for co in valid_constellation_orders:
-            constellation, bits_rep = generate_gray_constellation(co)
+            constellation, bits_rep = generate_constellation(co)
             self.assertEqual(constellation.size, 2 ** co)
             self.assertEqual(constellation.size, len(bits_rep))
 
@@ -87,7 +85,7 @@ class qa_constellation(gr_unittest.TestCase):
         valid_constellation_orders = np.array([5, 7, 8])
         for co in valid_constellation_orders:
             self.assertRaises(NotImplementedError,
-                              generate_gray_constellation, co)
+                              generate_constellation, co)
 
 
 class qa_SymbolMapping(gr_unittest.TestCase):
@@ -105,7 +103,7 @@ class qa_SymbolMapping(gr_unittest.TestCase):
         orders = np.array([1, 2, 4, 6])
         for co in self._orders:
             dm = symbolmapping.SymbolMapping(co)
-            c, b = generate_gray_constellation(co)
+            c, b = generate_constellation(co)
             self.assertVectorAlmostEqual(c, dm.constellation())
             self.assertEqual(dm.constellationOrder(), co)
 
@@ -113,8 +111,8 @@ class qa_SymbolMapping(gr_unittest.TestCase):
         noi_orders = np.arange(12, dtype=int)
         for o in noi_orders:
             if o not in self._orders:
-                self.assertRaises(ValueError, 
-                                  symbolmapping.SymbolMapping, 
+                self.assertRaises(ValueError,
+                                  symbolmapping.SymbolMapping,
                                   o)
 
     def test_003_constellation_set(self):
@@ -122,7 +120,7 @@ class qa_SymbolMapping(gr_unittest.TestCase):
         orders = np.array([1, 2, 4, 6])
         for co in orders:
             dm.setConstellationOrder(co)
-            c, b = generate_gray_constellation(co)
+            c, b = generate_constellation(co)
             self.assertVectorAlmostEqual(c, dm.constellation())
 
     def test_004_mapping(self):
@@ -177,14 +175,14 @@ class qa_SymbolMapping(gr_unittest.TestCase):
         dm = symbolmapping.SymbolMapping(4, "BORonka")
         self.assertEqual(dm.constellationType(), "BORONKA")
         res = dm.constellation()
-        ref, bins = generate_16qam_boronka_constellation()
+        ref, bins = generate_constellation(4, 'BoRoNkA')
         self.assertTrue(np.all(np.abs(res - ref) < 1e-7))
 
     def test_009_constellation_carson(self):
         dm = symbolmapping.SymbolMapping(4, "carSon")
         self.assertEqual(dm.constellationType(), "CARSON")
         res = dm.constellation()
-        ref, bins = generate_16qam_carson_constellation()
+        ref, bins = generate_constellation(4, 'cArSoN')
         self.assertTrue(np.all(np.abs(res - ref) < 1e-7))
 
     def test_010_db2lin_conversion(self):

@@ -24,8 +24,8 @@ from gnuradio import blocks
 import pmt
 import numpy as np
 import symbolmapping_swig as symbolmapping
-from ref_constellation import generate_gray_constellation
-from ref_constellation import map_to_constellation
+from symbol_constellation import generate_gray_constellation
+from symbol_constellation import map_to_constellation
 from symbol_demapper import calculate_symbol_log_probabilities
 from symbol_demapper import calculate_llrs
 
@@ -45,7 +45,7 @@ class qa_symbol_demapper_cf(gr_unittest.TestCase):
         nbits = 16 * 100
         constellation_order = 4
         self.verify_scalar_snr(constellation_order, nbits)
-    
+
     def test_003_scalar_snr_64qam(self):
         nbits = 16 * 100
         constellation_order = 6
@@ -55,7 +55,7 @@ class qa_symbol_demapper_cf(gr_unittest.TestCase):
         constellation, bits_rep = generate_gray_constellation(constellation_order)
         data = np.random.randint(0, 2, constellation_order * nbits).astype(np.uint8)
         symbols = map_to_constellation(data, constellation)
-        
+
         snr = 5.0
         snr_step = .5
         tags = []
@@ -63,10 +63,10 @@ class qa_symbol_demapper_cf(gr_unittest.TestCase):
         last_offset = 0
         ref = np.array([], dtype=np.float32)
         for offset in offsets:
-            t = gr.tag_utils.python_to_tag((offset, pmt.string_to_symbol("snr"), 
+            t = gr.tag_utils.python_to_tag((offset, pmt.string_to_symbol("snr"),
                                             pmt.from_float(snr)))
             tags.append(t)
-            
+
             syms = symbols[last_offset:offset]
             # print(syms.size)
             ref_ln_probs = calculate_symbol_log_probabilities(syms,
@@ -76,7 +76,7 @@ class qa_symbol_demapper_cf(gr_unittest.TestCase):
             ref = np.concatenate((ref, refs))
             last_offset = offset
             snr += snr_step
-            
+
         syms = symbols[last_offset:]
         ref_ln_probs = calculate_symbol_log_probabilities(syms,
                                                           constellation,
@@ -86,8 +86,8 @@ class qa_symbol_demapper_cf(gr_unittest.TestCase):
         ref *= .5
 
         # print(f'test: Order={constellation_order}, bits={nbits}/{data.size}, packed={is_packed}')
-        
-        mapper = symbolmapping.symbol_demapper_cf(constellation_order, 
+
+        mapper = symbolmapping.symbol_demapper_cf(constellation_order,
                                                   "GRAY")
         src = blocks.vector_source_c(symbols, False, 1, tags)
         snk = blocks.vector_sink_f()
@@ -123,7 +123,7 @@ class qa_symbol_demapper_cf(gr_unittest.TestCase):
         constellation, bits_rep = generate_gray_constellation(constellation_order)
         data = np.random.randint(0, 2, constellation_order * nbits).astype(np.uint8)
         symbols = map_to_constellation(data, constellation)
-        
+
         snr = np.arange(35, dtype=np.float) + 1.
         snr_step = 2.5
         tags = []
@@ -132,10 +132,10 @@ class qa_symbol_demapper_cf(gr_unittest.TestCase):
         ref = np.array([], dtype=np.float32)
         for offset in offsets:
             valuevector = pmt.init_f32vector(snr.size, snr.tolist())
-            t = gr.tag_utils.python_to_tag((offset, pmt.string_to_symbol("snr"), 
+            t = gr.tag_utils.python_to_tag((offset, pmt.string_to_symbol("snr"),
                                             valuevector))
             tags.append(t)
-            
+
             syms = symbols[last_offset:offset]
             # print(syms.size)
             ref_ln_probs = calculate_symbol_log_probabilities(syms,
@@ -145,7 +145,7 @@ class qa_symbol_demapper_cf(gr_unittest.TestCase):
             ref = np.concatenate((ref, refs))
             last_offset = offset
             snr += snr_step
-            
+
         syms = symbols[last_offset:]
         ref_ln_probs = calculate_symbol_log_probabilities(syms,
                                                           constellation,
@@ -155,8 +155,8 @@ class qa_symbol_demapper_cf(gr_unittest.TestCase):
         ref *= .5
 
         # print(f'test: Order={constellation_order}, bits={nbits}/{data.size}, packed={is_packed}')
-        
-        mapper = symbolmapping.symbol_demapper_cf(constellation_order, 
+
+        mapper = symbolmapping.symbol_demapper_cf(constellation_order,
                                                   "GRAY")
         src = blocks.vector_source_c(symbols, False, 1, tags)
         snk = blocks.vector_sink_f()

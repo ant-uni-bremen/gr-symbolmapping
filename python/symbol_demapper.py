@@ -7,8 +7,8 @@
 #
 
 import numpy as np
-# import utils
-import ref_constellation as cstl
+from symbol_constellation import map_to_constellation
+import symbol_constellation as cstl
 
 
 '''
@@ -23,13 +23,6 @@ def db2lin(snr_db):
 
 def lin2db(snr_lin):
     return 10. * np.log10(snr_lin)
-
-
-def map_to_constellation(bits, constellation):
-    constellation_order = int(np.log2(len(constellation)))
-    points = utils.pack_bits(bits, constellation_order)
-    symbols = np.array([constellation[i] for i in points])
-    return symbols
 
 
 def get_symbol_prob(rx, constellation):

@@ -23,8 +23,8 @@ from gnuradio import gr, gr_unittest
 from gnuradio import blocks
 import symbolmapping_swig as symbolmapping
 import numpy as np
-from ref_constellation import generate_gray_constellation
-from ref_constellation import map_to_constellation
+from symbol_constellation import generate_gray_constellation
+from symbol_constellation import map_to_constellation
 
 # import os
 # print('Blocked waiting for GDB attach (pid = %d)' % (os.getpid(),))
@@ -43,7 +43,7 @@ class qa_symbol_mapper_bc(gr_unittest.TestCase):
             self.assertRaises((RuntimeError, TypeError), symbolmapping.symbol_mapper_bc,
                               co, "GRAY", False)
 
-    def verify_constellation_unpacked(self, constellation_order, 
+    def verify_constellation_unpacked(self, constellation_order,
                                       nbits, is_packed):
         constellation, bits_rep = generate_gray_constellation(constellation_order)
 
@@ -52,10 +52,10 @@ class qa_symbol_mapper_bc(gr_unittest.TestCase):
 
         if is_packed:
             data = np.packbits(data)
-        
+
         # print(f'test: Order={constellation_order}, bits={nbits}/{data.size}, packed={is_packed}')
-        
-        mapper = symbolmapping.symbol_mapper_bc(constellation_order, 
+
+        mapper = symbolmapping.symbol_mapper_bc(constellation_order,
                                                 "GRAY", is_packed)
         src = blocks.vector_source_b(data)
         snk = blocks.vector_sink_c()
@@ -69,61 +69,61 @@ class qa_symbol_mapper_bc(gr_unittest.TestCase):
     def test_002_unpacked_bpsk(self):
         nbits = 16 * 700
         constellation_order = 1
-        self.verify_constellation_unpacked(constellation_order, 
+        self.verify_constellation_unpacked(constellation_order,
                                            nbits, False)
 
     def test_003_unpacked_qpsk(self):
         nbits = 16 * 700
         constellation_order = 2
-        self.verify_constellation_unpacked(constellation_order, 
+        self.verify_constellation_unpacked(constellation_order,
                                            nbits, False)
 
     def test_004_unpacked_8psk(self):
         nbits = 16 * 700
         constellation_order = 3
-        self.verify_constellation_unpacked(constellation_order, 
+        self.verify_constellation_unpacked(constellation_order,
                                            nbits, False)
 
     def test_005_unpacked_16qam(self):
         nbits = 16 * 700
         constellation_order = 4
-        self.verify_constellation_unpacked(constellation_order, 
+        self.verify_constellation_unpacked(constellation_order,
                                            nbits, False)
 
     def test_006_unpacked_64qam(self):
         nbits = 16 * 700
         constellation_order = 6
-        self.verify_constellation_unpacked(constellation_order, 
+        self.verify_constellation_unpacked(constellation_order,
                                            nbits, False)
 
     def test_007_packed_bpsk(self):
         nbits = 16 * 700
         constellation_order = 1
-        self.verify_constellation_unpacked(constellation_order, 
+        self.verify_constellation_unpacked(constellation_order,
                                            nbits, True)
-                    
+
     def test_008_packed_qpsk(self):
         nbits = 16 * 700
         constellation_order = 2
-        self.verify_constellation_unpacked(constellation_order, 
+        self.verify_constellation_unpacked(constellation_order,
                                            nbits, True)
 
     # def test_009_packed_8psk(self):
     #     nbits = 16 * 700
     #     constellation_order = 3
-    #     self.verify_constellation_unpacked(constellation_order, 
+    #     self.verify_constellation_unpacked(constellation_order,
     #                                        nbits, True)
 
     def test_010_packed_16qam(self):
         nbits = 16 * 700
         constellation_order = 4
-        self.verify_constellation_unpacked(constellation_order, 
+        self.verify_constellation_unpacked(constellation_order,
                                            nbits, True)
 
     # def test_011_packed_64qam(self):
     #     nbits = 16 * 700
     #     constellation_order = 6
-    #     self.verify_constellation_unpacked(constellation_order, 
+    #     self.verify_constellation_unpacked(constellation_order,
     #                                        nbits, True)
 
 

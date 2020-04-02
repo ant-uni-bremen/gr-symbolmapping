@@ -27,6 +27,5 @@ PYBIND11_MODULE(symbolmapping_python, m) {
 #else
     m.attr("__version__") = "dev";
 #endif
-    
-}
 
+}

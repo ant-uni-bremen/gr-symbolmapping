@@ -123,6 +123,30 @@ def generate_16qam_carson_constellation():
     return constellation, bit_bins
 
 
+def generate_constellation(constellation_order, constellation_type='GRAY'):
+    constellation_type = constellation_type.upper()
+    if constellation_order != 4:
+        assert 'GRAY' in constellation_type
+    else:
+        constellation_type = constellation_type
+        cstl_types = ['GRAY', 'CARSON', 'BORONKA']
+        t = [i for i in cstl_types if constellation_type in i]
+        if len(t) == 1:
+            constellation_type = t[0]
+        else:
+            raise ValueError(f'Constellation type: "{constellation_type}" is not supported!')
+
+    if 'GRAY' in constellation_type:
+        return generate_gray_constellation(constellation_order)
+    elif 'BORONKA' in constellation_type:
+        return generate_16qam_boronka_constellation()
+    elif 'CARSON' in constellation_type:
+        return generate_16qam_carson_constellation()
+    else:
+        raise ValueError(f'Constellation type: "{constellation_type}" is not supported!')
+
+
+
 def pack_bits(bits, n_packed):
     b = np.reshape(bits, (-1, n_packed))
     vals = 2 ** np.arange(n_packed - 1, -1, -1)
