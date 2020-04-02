@@ -32,6 +32,18 @@ options:
     state: enabled
 
 blocks:
+- name: constellation_order
+  id: variable
+  parameters:
+    comment: ''
+    value: '6'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [349, 15]
+    rotation: 0
+    state: enabled
 - name: samp_rate
   id: variable
   parameters:
@@ -393,7 +405,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    constellation_order: '4'
+    constellation_order: constellation_order
     constellation_type: GRAY
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -401,7 +413,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [624, 340.0]
+    coordinate: [624, 340]
     rotation: 0
     state: true
 - name: symbolmapping_symbol_mapper_bc_0
@@ -410,7 +422,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    constellation_order: '4'
+    constellation_order: constellation_order
     constellation_type: GRAY
     is_packed: 'True'
     maxoutbuf: '0'

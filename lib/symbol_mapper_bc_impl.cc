@@ -57,8 +57,19 @@ namespace gr {
         update_unpacked_vector_length(1);
         set_relative_rate(1.0f / d_mapper->constellationOrder());
       }
-      
+
       set_fixed_rate(true);
+
+      if(d_is_packed){
+        switch(constellation_order){
+          case 2:
+            set_output_multiple(4); break;
+          case 4:
+            set_output_multiple(2); break;
+          case 6:
+            set_output_multiple(4); break;
+        }
+      }
     }
 
     /*
