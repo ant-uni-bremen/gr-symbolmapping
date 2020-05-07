@@ -24,7 +24,7 @@ namespace gr {
     class SYMBOLMAPPING_API interleaver : virtual public gr::sync_block
     {
      public:
-      typedef boost::shared_ptr<interleaver<T>> sptr;
+      typedef std::shared_ptr<interleaver<T>> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of symbolmapping::interleaver.
@@ -34,7 +34,7 @@ namespace gr {
        * class. symbolmapping::interleaver::make is the public interface for
        * creating new instances.
        */
-      static sptr make(std::vector<size_t> interleaver_indices, 
+      static sptr make(std::vector<size_t> interleaver_indices,
                        bool is_packed, bool interleave_mode);
     };
 
@@ -44,4 +44,3 @@ namespace gr {
 } // namespace gr
 
 #endif /* INCLUDED_SYMBOLMAPPING_INTERLEAVER_H */
-

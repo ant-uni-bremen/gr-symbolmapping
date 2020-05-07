@@ -64,15 +64,18 @@ def calculate_qpsk_probs_to_llrs(probs):
 def calculate_qpsk_log_probs_to_llrs(log_probs):
     # compare qpsk bit map
     llr0 = np.max(log_probs[2:4]) - np.max(log_probs[0:2])
-    llr1 = np.max(log_probs[np.array((1, 3))]) - np.max(log_probs[np.array((0, 2))])
+    llr1 = np.max(log_probs[np.array((1, 3))]) - \
+        np.max(log_probs[np.array((0, 2))])
     return llr0, llr1
 
 
 def calculate_qpsk_llrs_messages(llrs, log_probs):
     # compare qpsk bit map
     res_llrs = np.zeros(2)
-    res_llrs[0] = np.maximum(log_probs[2], log_probs[3] + llrs[1]) - np.maximum(log_probs[0], log_probs[1] + llrs[1])
-    res_llrs[1] = np.maximum(log_probs[1], log_probs[3] + llrs[0]) - np.maximum(log_probs[0], log_probs[2] + llrs[0])
+    res_llrs[0] = np.maximum(log_probs[2], log_probs[3] + llrs[1]) - \
+        np.maximum(log_probs[0], log_probs[1] + llrs[1])
+    res_llrs[1] = np.maximum(log_probs[1], log_probs[3] + llrs[0]) - \
+        np.maximum(log_probs[0], log_probs[2] + llrs[0])
     return res_llrs * -1.
 
 
@@ -84,14 +87,16 @@ def calculate_qpsk_llrs(log_probs, llrs=None):
         llrs = np.zeros(nc, dtype=float)
     for i, l_prob in enumerate(log_probs):
         # llrs[i * constellation_order: (i + 1) * constellation_order] = calculate_qpsk_log_probs_to_llrs(l_prob)
-        llrs[i * constellation_order: (i + 1) * constellation_order] = calculate_qpsk_llrs_messages(llrs[i * constellation_order: (i + 1) * constellation_order], l_prob)
+        llrs[i * constellation_order: (i + 1) * constellation_order] = calculate_qpsk_llrs_messages(
+            llrs[i * constellation_order: (i + 1) * constellation_order], l_prob)
     return llrs
 
 
 def qpsk_map_demap_chain():
     constellation_order = 2
     snr_db = 20
-    constellation, bits_rep = cstl.generate_gray_constellation(constellation_order)
+    constellation, bits_rep = cstl.generate_gray_constellation(
+        constellation_order)
     print(constellation)
     print(bits_rep)
     app_llrs = np.zeros(constellation_order)
@@ -114,7 +119,8 @@ def qpsk_map_demap_chain():
 
 def calculate_symbol_log_probabilities(symbols, constellation, snr_db):
     if isinstance(snr_db, np.ndarray):
-        snr = np.tile(snr_db, int(np.ceil(symbols.size / snr_db.size)))[0:symbols.size]
+        snr = np.tile(snr_db, int(
+            np.ceil(symbols.size / snr_db.size)))[0:symbols.size]
     else:
         snr = np.full(symbols.size, db2lin(snr_db), dtype=np.float)
     log_probs = np.zeros((len(symbols), len(constellation)), dtype=float)
@@ -166,7 +172,8 @@ def calculate_16qam_llrs(log_probs, llrs=None):
         llrs = np.zeros(nc, dtype=float)
     for i, l_prob in enumerate(log_probs):
         # llrs[i * constellation_order: (i + 1) * constellation_order] = calculate_qpsk_log_probs_to_llrs(l_prob)
-        llrs[i * constellation_order: (i + 1) * constellation_order] = calculate_16qam_llrs_messages(llrs[i * constellation_order: (i + 1) * constellation_order], l_prob)
+        llrs[i * constellation_order: (i + 1) * constellation_order] = calculate_16qam_llrs_messages(
+            llrs[i * constellation_order: (i + 1) * constellation_order], l_prob)
     return llrs
 
 
@@ -176,20 +183,22 @@ def calculate_llrs(log_probs, llrs=None):
     nc = n_symbols * constellation_order
     if llrs is None:
         llrs = np.zeros(nc, dtype=float)
-    if constellation_order is 2:
+    if constellation_order == 2:
         return calculate_qpsk_llrs(log_probs, llrs)
-    elif constellation_order is 4:
+    elif constellation_order == 4:
         return calculate_16qam_llrs(log_probs, llrs)
-    elif constellation_order is 6:
+    elif constellation_order == 6:
         return calculate_64qam_llrs(log_probs, llrs)
     else:
-        raise NotImplementedError('Constellation {:} NOT IMPLEMENTED!'.format(constellation_order))
+        raise NotImplementedError(
+            'Constellation {:} NOT IMPLEMENTED!'.format(constellation_order))
 
 
 def qam16_map_demap_chain():
     constellation_order = 4
     snr_db = 20
-    constellation, bits_rep = cstl.generate_gray_constellation(constellation_order)
+    constellation, bits_rep = cstl.generate_gray_constellation(
+        constellation_order)
     print(constellation)
     print(bits_rep)
     app_llrs = np.zeros(constellation_order)
@@ -203,7 +212,8 @@ def qam16_map_demap_chain():
                     print(app_llrs)
                     s = map_to_constellation(bits, constellation)
                     print(s)
-                    l_prob = calculate_log_probability_vector(s, constellation, snr_db)
+                    l_prob = calculate_log_probability_vector(
+                        s, constellation, snr_db)
                     print(l_prob)
                     llrs = calculate_16qam_llrs_messages(app_llrs, l_prob)
                     # llrs = np.array(llrs)
@@ -223,7 +233,8 @@ def calculate_64qam_llrs_messages(app_llrs, log_probs):
         indices = np.reshape(indices, (2 ** (i + 1), -1))
         idx0 = indices[0::2].flatten()
         idx1 = indices[1::2].flatten()
-        llrs[i] = np.max(log_probs[idx1] + app_l) - np.max(log_probs[idx0] + app_l)
+        llrs[i] = np.max(log_probs[idx1] + app_l) - \
+            np.max(log_probs[idx0] + app_l)
     return llrs * -1.
 
 
@@ -234,14 +245,16 @@ def calculate_64qam_llrs(log_probs, llrs=None):
     if llrs is None:
         llrs = np.zeros(nc, dtype=float)
     for i, l_prob in enumerate(log_probs):
-        llrs[i * constellation_order: (i + 1) * constellation_order] = calculate_64qam_llrs_messages(llrs[i * constellation_order: (i + 1) * constellation_order], l_prob)
+        llrs[i * constellation_order: (i + 1) * constellation_order] = calculate_64qam_llrs_messages(
+            llrs[i * constellation_order: (i + 1) * constellation_order], l_prob)
     return llrs
 
 
 def qam64_map_demap_chain():
     constellation_order = 6
     snr_db = 20
-    constellation, bits_rep = cstl.generate_gray_constellation(constellation_order)
+    constellation, bits_rep = cstl.generate_gray_constellation(
+        constellation_order)
     print(constellation)
     print(bits_rep)
     app_llrs = np.zeros(constellation_order)
@@ -255,16 +268,19 @@ def qam64_map_demap_chain():
                             print(bits)
                             s = map_to_constellation(bits, constellation)
                             print(s)
-                            l_prob = calculate_log_probability_vector(s, constellation, snr_db)
+                            l_prob = calculate_log_probability_vector(
+                                s, constellation, snr_db)
                             print(l_prob)
-                            llrs = calculate_64qam_llrs_messages(app_llrs, l_prob)
+                            llrs = calculate_64qam_llrs_messages(
+                                app_llrs, l_prob)
                             llrs = np.array(llrs)
                             print(llrs)
                             hat_bits = utils.decide_bits(llrs)
                             print(hat_bits)
                             print(np.all(bits == hat_bits))
                             if not np.all(bits == hat_bits):
-                                raise RuntimeError('64QAM Mapping --> Demapping fails!')
+                                raise RuntimeError(
+                                    '64QAM Mapping --> Demapping fails!')
 
 
 def main():
@@ -275,14 +291,15 @@ def main():
     qam64_map_demap_chain()
 
     try:
-        calculate_llrs(np.array([[1,4,5,6,7,8,4,3],]))
+        calculate_llrs(np.array([[1, 4, 5, 6, 7, 8, 4, 3], ]))
     except NotImplementedError:
         pass
-    #return
+    # return
     rx = .6 + .7j
     constellation_order = 4
     snr_db = 20
-    constellation, bits_rep = cstl.generate_gray_constellation(constellation_order)
+    constellation, bits_rep = cstl.generate_gray_constellation(
+        constellation_order)
     l_prob = calculate_log_probability_vector(rx, constellation, snr_db)
     # print(constellation)
     # print(bits_rep)
@@ -296,7 +313,8 @@ def main():
     symbols = map_to_constellation(bits, constellation)
     # print(symbols)
     symbols += utils.generate_complex_noise_symbols(len(symbols), snr_db)
-    log_probs = calculate_symbol_log_probabilities(symbols, constellation, snr_db)
+    log_probs = calculate_symbol_log_probabilities(
+        symbols, constellation, snr_db)
 
     calculate_16qam_llrs(log_probs)
 

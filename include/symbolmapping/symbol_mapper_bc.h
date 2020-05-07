@@ -35,7 +35,7 @@ namespace gr {
     class SYMBOLMAPPING_API symbol_mapper_bc : virtual public gr::block
     {
      public:
-      typedef boost::shared_ptr<symbol_mapper_bc> sptr;
+      typedef std::shared_ptr<symbol_mapper_bc> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of symbolmapping::symbol_mapper_bc.
@@ -52,4 +52,3 @@ namespace gr {
 } // namespace gr
 
 #endif /* INCLUDED_SYMBOLMAPPING_SYMBOL_MAPPER_BC_H */
-

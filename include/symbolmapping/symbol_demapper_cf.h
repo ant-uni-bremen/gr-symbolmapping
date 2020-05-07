@@ -35,7 +35,7 @@ namespace gr {
     class SYMBOLMAPPING_API symbol_demapper_cf : virtual public gr::sync_interpolator
     {
      public:
-      typedef boost::shared_ptr<symbol_demapper_cf> sptr;
+      typedef std::shared_ptr<symbol_demapper_cf> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of symbolmapping::symbol_demapper_cf.
@@ -52,4 +52,3 @@ namespace gr {
 } // namespace gr
 
 #endif /* INCLUDED_SYMBOLMAPPING_SYMBOL_DEMAPPER_CF_H */
-
