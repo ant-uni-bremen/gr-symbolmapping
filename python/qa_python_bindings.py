@@ -75,14 +75,14 @@ class qa_constellation(gr_unittest.TestCase):
         pass
 
     def test_001_generate_gray_valid(self):
-        valid_constellation_orders = np.array([1, 2, 4, 6])
+        valid_constellation_orders = np.array([1, 2, 4, 6, 8])
         for co in valid_constellation_orders:
             constellation, bits_rep = generate_constellation(co)
             self.assertEqual(constellation.size, 2 ** co)
             self.assertEqual(constellation.size, len(bits_rep))
 
     def test_002_generate_gray_invalid(self):
-        valid_constellation_orders = np.array([5, 7, 8])
+        valid_constellation_orders = np.array([5, 7, 9])
         for co in valid_constellation_orders:
             self.assertRaises(NotImplementedError,
                               generate_constellation, co)

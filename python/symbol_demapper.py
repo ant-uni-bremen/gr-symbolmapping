@@ -92,6 +92,11 @@ def calculate_qpsk_llrs(log_probs, llrs=None):
     return llrs
 
 
+def decide_bits(llrs):
+    b = np.array(llrs) < 0.0
+    return b.astype(int)
+
+
 def qpsk_map_demap_chain():
     constellation_order = 2
     snr_db = 20
@@ -110,7 +115,7 @@ def qpsk_map_demap_chain():
             print(l_prob)
             llr0, llr1 = calculate_qpsk_llrs_messages(app_llrs, l_prob)
             print(llr0, llr1)
-            hat_bits = utils.decide_bits((llr0, llr1))
+            hat_bits = decide_bits((llr0, llr1))
             print(hat_bits)
             print(np.all(bits == hat_bits))
             if not np.all(bits == hat_bits):
@@ -207,7 +212,7 @@ def qam16_map_demap_chain():
             for k in range(2):
                 for l in range(2):
                     bits = np.array((i, j, k, l))
-                    print(utils.pack_bits(bits, 4), bits)
+                    # print(utils.pack_bits(bits, 4), bits)
                     app_llrs = 100. * (2. * bits - 1)
                     print(app_llrs)
                     s = map_to_constellation(bits, constellation)
@@ -218,7 +223,7 @@ def qam16_map_demap_chain():
                     llrs = calculate_16qam_llrs_messages(app_llrs, l_prob)
                     # llrs = np.array(llrs)
                     print(llrs)
-                    hat_bits = utils.decide_bits(llrs)
+                    hat_bits = decide_bits(llrs)
                     print(hat_bits)
                     print(np.all(bits == hat_bits))
                     if not np.all(bits == hat_bits):
@@ -275,7 +280,7 @@ def qam64_map_demap_chain():
                                 app_llrs, l_prob)
                             llrs = np.array(llrs)
                             print(llrs)
-                            hat_bits = utils.decide_bits(llrs)
+                            hat_bits = decide_bits(llrs)
                             print(hat_bits)
                             print(np.all(bits == hat_bits))
                             if not np.all(bits == hat_bits):
@@ -312,7 +317,7 @@ def main():
     bits = np.random.randint(0, 2, constellation_order * 300)
     symbols = map_to_constellation(bits, constellation)
     # print(symbols)
-    symbols += utils.generate_complex_noise_symbols(len(symbols), snr_db)
+    # symbols += utils.generate_complex_noise_symbols(len(symbols), snr_db)
     log_probs = calculate_symbol_log_probabilities(
         symbols, constellation, snr_db)
 

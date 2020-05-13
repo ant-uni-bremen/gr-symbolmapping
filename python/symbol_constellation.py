@@ -80,6 +80,22 @@ def generate_64qam_gray_constellation():
     return constellation, bit_bins
 
 
+def generate_256qam_gray_constellation():
+    constellation_order = 8
+    n_points = 2 ** constellation_order
+    bit_bins = get_bit_bins(constellation_order)
+    constellation = np.zeros(n_points, dtype=np.complex)
+    for i in range(n_points):
+        b = list(bit_bins[i])
+        c = [int(j) for j in b]
+        cz = 1. - 2. * np.array(c)
+        re = cz[0] * (8 - cz[2] * (4 - cz[4] * (2 - cz[6])))
+        im = cz[1] * (8 - cz[3] * (4 - cz[5] * (2 - cz[7])))
+        constellation[i] = re + 1j * im
+    constellation /= np.sqrt(170.)
+    return constellation, bit_bins
+
+
 def generate_gray_constellation(constellation_order):
     if constellation_order == 1:
         return generate_bpsk_gray_constellation()
@@ -91,6 +107,8 @@ def generate_gray_constellation(constellation_order):
         return generate_16qam_gray_constellation()
     elif constellation_order == 6:
         return generate_64qam_gray_constellation()
+    elif constellation_order == 8:
+        return generate_256qam_gray_constellation()
     else:
         raise NotImplementedError()
 
@@ -158,3 +176,22 @@ def map_to_constellation(bits, constellation):
     points = pack_bits(bits, constellation_order)
     symbols = np.array([constellation[i] for i in points])
     return symbols
+
+
+def main():
+    import matplotlib.pyplot as plt
+    cstl, bits = generate_constellation(8)
+    plt.scatter(cstl.real, cstl.imag)
+    for c, b in zip(cstl, bits):
+        pos = (c.real, c.imag)
+        plt.annotate(b, pos)
+
+    plt.grid()
+    plt.xlabel('inphase')
+    plt.ylabel('quadrature')
+    plt.tight_layout()
+    plt.show()
+
+
+if __name__ == '__main__':
+    main()
