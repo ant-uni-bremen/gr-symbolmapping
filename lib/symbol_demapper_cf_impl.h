@@ -28,39 +28,39 @@
 #include <memory>
 
 namespace gr {
-  namespace symbolmapping {
+namespace symbolmapping {
 
-    class symbol_demapper_cf_impl : public symbol_demapper_cf
-    {
-     private:
-      std::unique_ptr<SymbolMapping> d_mapper;
+class symbol_demapper_cf_impl : public symbol_demapper_cf
+{
+private:
+    std::unique_ptr<SymbolMapping> d_mapper;
 
-      float d_snr_db;
-      volk::vector<float> d_snrs_lin;
+    float d_snr_db;
+    volk::vector<float> d_snrs_lin;
 
-      void demap_llrs(float* out, const gr_complex* in, 
-                      const unsigned nitems);
+    pmt::pmt_t d_tag_key;
 
-      void update_snr(const float snr_db);
-      void update_snr(const volk::vector<float> & snrs_lin);
+    void demap_llrs(float* out, const gr_complex* in, const unsigned nitems);
 
-      void handle_tag(const tag_t &tag);
+    void update_snr(const float snr_db);
+    void update_snr(const volk::vector<float>& snrs_lin);
+
+    void handle_tag(const tag_t& tag);
 
 
-     public:
-      symbol_demapper_cf_impl(unsigned constellation_order, std::string constellation_type);
-      ~symbol_demapper_cf_impl();
+public:
+    symbol_demapper_cf_impl(unsigned constellation_order,
+                            std::string constellation_type,
+                            std::string snr_tag_name = std::string("snr"));
+    ~symbol_demapper_cf_impl();
 
-      // Where all the action really happens
-      int work(
-              int noutput_items,
-              gr_vector_const_void_star &input_items,
-              gr_vector_void_star &output_items
-      );
-    };
+    // Where all the action really happens
+    int work(int noutput_items,
+             gr_vector_const_void_star& input_items,
+             gr_vector_void_star& output_items);
+};
 
-  } // namespace symbolmapping
+} // namespace symbolmapping
 } // namespace gr
 
 #endif /* INCLUDED_SYMBOLMAPPING_SYMBOL_DEMAPPER_CF_IMPL_H */
-

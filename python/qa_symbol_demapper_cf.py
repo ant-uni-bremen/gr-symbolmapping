@@ -88,7 +88,7 @@ class qa_symbol_demapper_cf(gr_unittest.TestCase):
         # print(f'test: Order={constellation_order}, bits={nbits}/{data.size}, packed={is_packed}')
 
         mapper = symbolmapping.symbol_demapper_cf(constellation_order,
-                                                  "GRAY")
+                                                  "GRAY", "snr")
         src = blocks.vector_source_c(symbols, False, 1, tags)
         snk = blocks.vector_sink_f()
 
@@ -157,7 +157,7 @@ class qa_symbol_demapper_cf(gr_unittest.TestCase):
         # print(f'test: Order={constellation_order}, bits={nbits}/{data.size}, packed={is_packed}')
 
         mapper = symbolmapping.symbol_demapper_cf(constellation_order,
-                                                  "GRAY")
+                                                  "GRAY", "snr")
         src = blocks.vector_source_c(symbols, False, 1, tags)
         snk = blocks.vector_sink_f()
 

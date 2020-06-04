@@ -1,10 +1,10 @@
 id: symbolmapping_symbol_demapper_cf
 label: Symbol Demapper
-category: '[symbolmapping]'
+category: "[symbolmapping]"
 
 templates:
   imports: import symbolmapping
-  make: symbolmapping.symbol_demapper_cf(${constellation_order}, ${constellation_type})
+  make: symbolmapping.symbol_demapper_cf(${constellation_order}, ${constellation_type}, ${snr_tag_name})
 
 #  Make one 'parameters' list entry for every parameter you want settable from the GUI.
 #     Keys include:
@@ -12,13 +12,16 @@ templates:
 #     * label (label shown in the GUI)
 #     * dtype (e.g. int, float, complex, byte, short, xxx_vector, ...)
 parameters:
-- id: constellation_order
-  label: Constellation order
-  dtype: int
-- id: constellation_type
-  label: Constellation Type
-  dtype: string
-
+  - id: constellation_order
+    label: Constellation order
+    dtype: int
+  - id: constellation_type
+    label: Constellation Type
+    dtype: string
+  - id: snr_tag_name
+    label: SNR tag key
+    dtype: string
+    default: "snr"
 #  Make one 'inputs' list entry per input and one 'outputs' list entry per output.
 #  Keys include:
 #      * label (an identifier for the GUI)
@@ -27,13 +30,12 @@ parameters:
 #      * vlen (optional - data stream vector length. Default is 1)
 #      * optional (optional - set to 1 for optional inputs. Default is 0)
 inputs:
-- label: in
-  dtype: complex
+  - label: in
+    dtype: complex
 
 outputs:
-- label: out
-  dtype: float
-
+  - label: out
+    dtype: float
 
 #  'file_format' specifies the version of the GRC yml format used in the file
 #  and should usually not be changed.

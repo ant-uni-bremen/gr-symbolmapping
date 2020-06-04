@@ -21,34 +21,36 @@
 #ifndef INCLUDED_SYMBOLMAPPING_SYMBOL_DEMAPPER_CF_H
 #define INCLUDED_SYMBOLMAPPING_SYMBOL_DEMAPPER_CF_H
 
-#include <symbolmapping/api.h>
 #include <gnuradio/sync_interpolator.h>
+#include <symbolmapping/api.h>
 
 namespace gr {
-  namespace symbolmapping {
+namespace symbolmapping {
+
+/*!
+ * \brief <+description of block+>
+ * \ingroup symbolmapping
+ *
+ */
+class SYMBOLMAPPING_API symbol_demapper_cf : virtual public gr::sync_interpolator
+{
+public:
+    typedef std::shared_ptr<symbol_demapper_cf> sptr;
 
     /*!
-     * \brief <+description of block+>
-     * \ingroup symbolmapping
+     * \brief Return a shared_ptr to a new instance of symbolmapping::symbol_demapper_cf.
      *
+     * To avoid accidental use of raw pointers, symbolmapping::symbol_demapper_cf's
+     * constructor is in a private implementation
+     * class. symbolmapping::symbol_demapper_cf::make is the public interface for
+     * creating new instances.
      */
-    class SYMBOLMAPPING_API symbol_demapper_cf : virtual public gr::sync_interpolator
-    {
-     public:
-      typedef std::shared_ptr<symbol_demapper_cf> sptr;
+    static sptr make(unsigned constellation_order,
+                     std::string constellation_type,
+                     std::string snr_tag_name = std::string("snr"));
+};
 
-      /*!
-       * \brief Return a shared_ptr to a new instance of symbolmapping::symbol_demapper_cf.
-       *
-       * To avoid accidental use of raw pointers, symbolmapping::symbol_demapper_cf's
-       * constructor is in a private implementation
-       * class. symbolmapping::symbol_demapper_cf::make is the public interface for
-       * creating new instances.
-       */
-      static sptr make(unsigned constellation_order, std::string constellation_type);
-    };
-
-  } // namespace symbolmapping
+} // namespace symbolmapping
 } // namespace gr
 
 #endif /* INCLUDED_SYMBOLMAPPING_SYMBOL_DEMAPPER_CF_H */
