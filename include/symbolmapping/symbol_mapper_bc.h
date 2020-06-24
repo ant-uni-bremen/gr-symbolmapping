@@ -21,34 +21,35 @@
 #ifndef INCLUDED_SYMBOLMAPPING_SYMBOL_MAPPER_BC_H
 #define INCLUDED_SYMBOLMAPPING_SYMBOL_MAPPER_BC_H
 
-#include <symbolmapping/api.h>
 #include <gnuradio/block.h>
+#include <symbolmapping/api.h>
 
 namespace gr {
-  namespace symbolmapping {
+namespace symbolmapping {
+
+/*!
+ * \brief Map packed/unpacked bits to complex symbols
+ * \ingroup symbolmapping
+ *
+ */
+class SYMBOLMAPPING_API symbol_mapper_bc : virtual public gr::block
+{
+public:
+    typedef std::shared_ptr<symbol_mapper_bc> sptr;
 
     /*!
-     * \brief <+description of block+>
-     * \ingroup symbolmapping
+     * \brief Return a shared_ptr to a new instance of symbolmapping::symbol_mapper_bc.
      *
+     * To avoid accidental use of raw pointers, symbolmapping::symbol_mapper_bc's
+     * constructor is in a private implementation
+     * class. symbolmapping::symbol_mapper_bc::make is the public interface for
+     * creating new instances.
      */
-    class SYMBOLMAPPING_API symbol_mapper_bc : virtual public gr::block
-    {
-     public:
-      typedef std::shared_ptr<symbol_mapper_bc> sptr;
+    static sptr
+    make(unsigned constellation_order, std::string constellation_type, bool is_packed);
+};
 
-      /*!
-       * \brief Return a shared_ptr to a new instance of symbolmapping::symbol_mapper_bc.
-       *
-       * To avoid accidental use of raw pointers, symbolmapping::symbol_mapper_bc's
-       * constructor is in a private implementation
-       * class. symbolmapping::symbol_mapper_bc::make is the public interface for
-       * creating new instances.
-       */
-      static sptr make(unsigned constellation_order, std::string constellation_type, bool is_packed);
-    };
-
-  } // namespace symbolmapping
+} // namespace symbolmapping
 } // namespace gr
 
 #endif /* INCLUDED_SYMBOLMAPPING_SYMBOL_MAPPER_BC_H */

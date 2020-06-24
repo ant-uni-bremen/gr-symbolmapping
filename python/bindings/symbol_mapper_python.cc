@@ -15,10 +15,10 @@
 /* BINDTOOL_HEADER_FILE_HASH(547318656dd68cb27cf0be9b6047bd80)                     */
 /***********************************************************************************/
 
-#include <pybind11/pybind11.h>
 #include <pybind11/complex.h>
-#include <pybind11/stl.h>
 #include <pybind11/numpy.h>
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 namespace py = pybind11;
 
@@ -27,8 +27,7 @@ namespace py = pybind11;
 #include <symbolmapping/symbol_mapper.h>
 
 
-
-void bind_symbol_mapper(py::module &m)
+void bind_symbol_mapper(py::module& m)
 {
     m.def("lin2db", &lin2db);
     m.def("db2lin", &db2lin);
@@ -41,69 +40,81 @@ void bind_symbol_mapper(py::module &m)
         .def("constellationSize", &SymbolMapping::constellationSize)
         .def("constellationType", &SymbolMapping::constellationType)
         .def("setConstellationOrder", &SymbolMapping::setConstellationOrder)
-        .def("constellation", [](SymbolMapping &self) {
-            auto c = self.constellation();
-            return py::array(c.size(), c.data());
-        })
+        .def("constellation",
+             [](SymbolMapping& self) {
+                 auto c = self.constellation();
+                 return py::array(c.size(), c.data());
+             })
 
-        .def("map_to_constellation", [](SymbolMapping &self, const py::array_t<uint8_t, py::array::c_style | py::array::forcecast> array) {
-            py::buffer_info inb = array.request();
-            if (inb.ndim != 1)
-            {
-                throw std::runtime_error("Only ONE-dimensional vectors allowed!");
-            }
-            auto result = py::array_t<fcmplx>(inb.size / self.constellationOrder());
-            py::buffer_info resb = result.request();
+        .def("map_to_constellation",
+             [](SymbolMapping& self,
+                const py::array_t<uint8_t, py::array::c_style | py::array::forcecast>
+                    array) {
+                 py::buffer_info inb = array.request();
+                 if (inb.ndim != 1) {
+                     throw std::runtime_error("Only ONE-dimensional vectors allowed!");
+                 }
+                 auto result = py::array_t<fcmplx>(inb.size / self.constellationOrder());
+                 py::buffer_info resb = result.request();
 
-            self.map_to_constellation((fcmplx *)resb.ptr, (uint8_t *)inb.ptr, inb.size);
-            return result;
-        })
-        .def("calculate_ln_probabilities", [](SymbolMapping &self, const py::array_t<fcmplx, py::array::c_style | py::array::forcecast> array, const float snr_db) {
-            py::buffer_info inb = array.request();
-            if (inb.ndim != 1)
-            {
-                throw std::runtime_error("Only ONE-dimensional vectors allowed!");
-            }
-            auto result = py::array_t<float>(inb.size * self.constellationSize());
-            py::buffer_info resb = result.request();
+                 self.map_to_constellation(
+                     (fcmplx*)resb.ptr, (uint8_t*)inb.ptr, inb.size);
+                 return result;
+             })
+        .def(
+            "calculate_ln_probabilities",
+            [](SymbolMapping& self,
+               const py::array_t<fcmplx, py::array::c_style | py::array::forcecast> array,
+               const float snr_db) {
+                py::buffer_info inb = array.request();
+                if (inb.ndim != 1) {
+                    throw std::runtime_error("Only ONE-dimensional vectors allowed!");
+                }
+                auto result = py::array_t<float>(inb.size * self.constellationSize());
+                py::buffer_info resb = result.request();
 
-            self.calculate_ln_probabilities((float *)resb.ptr,
-                                            (fcmplx *)inb.ptr,
-                                            inb.size, snr_db);
-            return result;
-        })
-        .def("demap_llrs", [](SymbolMapping &self, const py::array_t<fcmplx, py::array::c_style | py::array::forcecast> array, const float snr_db) {
-            py::buffer_info inb = array.request();
-            if (inb.ndim != 1)
-            {
-                throw std::runtime_error("Only ONE-dimensional vectors allowed!");
-            }
-            auto result = py::array_t<float>(inb.size * self.constellationOrder());
-            py::buffer_info resb = result.request();
+                self.calculate_ln_probabilities(
+                    (float*)resb.ptr, (fcmplx*)inb.ptr, inb.size, snr_db);
+                return result;
+            })
+        .def(
+            "demap_llrs",
+            [](SymbolMapping& self,
+               const py::array_t<fcmplx, py::array::c_style | py::array::forcecast> array,
+               const float snr_db) {
+                py::buffer_info inb = array.request();
+                if (inb.ndim != 1) {
+                    throw std::runtime_error("Only ONE-dimensional vectors allowed!");
+                }
+                auto result = py::array_t<float>(inb.size * self.constellationOrder());
+                py::buffer_info resb = result.request();
 
-            self.demap_llrs((float *)resb.ptr, (fcmplx *)inb.ptr,
-                            inb.size, snr_db);
-            return result;
-        })
-        .def("demap_llrs_vec", [](SymbolMapping &self, const py::array_t<fcmplx, py::array::c_style | py::array::forcecast> array, const py::array_t<float, py::array::c_style | py::array::forcecast> snrs_lin) {
-            py::buffer_info inb = array.request();
-            py::buffer_info snrb = snrs_lin.request();
-            if (inb.ndim != 1)
-            {
-                throw std::runtime_error("Only ONE-dimensional vectors allowed!");
-            }
-            if (inb.size != snrb.size)
-            {
-                throw std::runtime_error("Symbol vector size MUST be equal to SNR vector size!");
-            }
+                self.demap_llrs((float*)resb.ptr, (fcmplx*)inb.ptr, inb.size, snr_db);
+                return result;
+            })
+        .def(
+            "demap_llrs_vec",
+            [](SymbolMapping& self,
+               const py::array_t<fcmplx, py::array::c_style | py::array::forcecast> array,
+               const py::array_t<float, py::array::c_style | py::array::forcecast>
+                   snrs_lin) {
+                py::buffer_info inb = array.request();
+                py::buffer_info snrb = snrs_lin.request();
+                if (inb.ndim != 1) {
+                    throw std::runtime_error("Only ONE-dimensional vectors allowed!");
+                }
+                if (inb.size != snrb.size) {
+                    throw std::runtime_error(
+                        "Symbol vector size MUST be equal to SNR vector size!");
+                }
 
-            auto result = py::array_t<float>(inb.size * self.constellationOrder());
-            py::buffer_info resb = result.request();
+                auto result = py::array_t<float>(inb.size * self.constellationOrder());
+                py::buffer_info resb = result.request();
 
-            self.demap_llrs_vec((float *)resb.ptr, (fcmplx *)inb.ptr, (float *)snrb.ptr,
-                                inb.size);
-            return result;
-        })
+                self.demap_llrs_vec(
+                    (float*)resb.ptr, (fcmplx*)inb.ptr, (float*)snrb.ptr, inb.size);
+                return result;
+            })
 
         ;
 }

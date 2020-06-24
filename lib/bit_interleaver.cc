@@ -19,27 +19,29 @@
  */
 
 #include <symbolmapping/bit_interleaver.h>
-#include <cstring>
+#include <algorithm>
 #include <chrono>
 #include <cstdlib>
-#include <algorithm>
+#include <cstring>
 #include <numeric>
 
 BitInterleaver::BitInterleaver(std::vector<size_t> interleaver_indices)
 {
-  set_interleaver(interleaver_indices);
+    set_interleaver(interleaver_indices);
 }
 
-BitInterleaver::~BitInterleaver(){}
+BitInterleaver::~BitInterleaver() {}
 
-void BitInterleaver::set_interleaver(const std::vector<size_t> &interleaver_indices){
-  _interleaver_indices = std::vector<size_t>(interleaver_indices);
+void BitInterleaver::set_interleaver(const std::vector<size_t>& interleaver_indices)
+{
+    _interleaver_indices = std::vector<size_t>(interleaver_indices);
 
-  _deinterleaver_indices.resize(_interleaver_indices.size());
-  std::iota(_deinterleaver_indices.begin(), _deinterleaver_indices.end(), 0);
-  // sort indexes based on comparing values in v
-  std::sort(_deinterleaver_indices.begin(), _deinterleaver_indices.end(),
-            [&interleaver_indices](size_t i1, size_t i2) {
-              return interleaver_indices[i1] < interleaver_indices[i2];
-            });
+    _deinterleaver_indices.resize(_interleaver_indices.size());
+    std::iota(_deinterleaver_indices.begin(), _deinterleaver_indices.end(), 0);
+    // sort indexes based on comparing values in v
+    std::sort(_deinterleaver_indices.begin(),
+              _deinterleaver_indices.end(),
+              [&interleaver_indices](size_t i1, size_t i2) {
+                  return interleaver_indices[i1] < interleaver_indices[i2];
+              });
 }
