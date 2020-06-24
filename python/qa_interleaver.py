@@ -8,7 +8,7 @@
 
 from gnuradio import gr, gr_unittest
 from gnuradio import blocks
-import symbolmapping_swig as symbolmapping
+import symbolmapping_python as symbolmapping
 import numpy as np
 from interleaver_indices import create_interleaver_indices
 

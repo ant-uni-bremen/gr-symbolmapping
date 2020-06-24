@@ -23,7 +23,7 @@ from gnuradio import gr, gr_unittest
 from gnuradio import blocks
 import pmt
 import numpy as np
-import symbolmapping_swig as symbolmapping
+import symbolmapping_python as symbolmapping
 from symbol_constellation import generate_gray_constellation
 from symbol_constellation import map_to_constellation
 from symbol_demapper import calculate_symbol_log_probabilities

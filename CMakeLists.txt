@@ -73,17 +73,7 @@ ENDIF()
 ########################################################################
 # Install directories
 ########################################################################
-message(STATUS "Searching for GNU Radio installation ...")
-find_package(Gnuradio "3.8" QUIET)
-if(NOT GNURADIO_FOUND)
-    message(STATUS "Searching for GNU Radio 3.9 ...")
-    find_package(Gnuradio "3.9" REQUIRED blocks analog fft filter digital)
-else()
-    message(STATUS "Searching for GNU Radio 3.8 ...")
-    find_package(Gnuradio "3.8" REQUIRED blocks analog fft filter digital)
-endif()
-message(STATUS "Found GNU Radio ${Gnuradio_VERSION}")
-
+find_package(Gnuradio "3.9" REQUIRED)
 include(GrVersion)
 
 include(GrPlatform) #define LIB_SUFFIX
@@ -125,6 +115,16 @@ endif(APPLE)
 find_package(Doxygen)
 
 ########################################################################
+# PyBind11 Related
+########################################################################
+
+find_package(pybind11 REQUIRED)
+execute_process(
+    COMMAND "${PYTHON_EXECUTABLE}" -c
+    "from __future__ import print_function\ntry:\n import numpy\n import os\n inc_path = numpy.get_include()\n if os.path.exists(os.path.join(inc_path, 'numpy', 'arrayobject.h')):\n  print(inc_path, end='')\nexcept:\n pass"
+    OUTPUT_VARIABLE PYTHON_NUMPY_INCLUDE_DIR)
+
+########################################################################
 # Setup doxygen option
 ########################################################################
 if(DOXYGEN_FOUND)
@@ -132,19 +132,6 @@ if(DOXYGEN_FOUND)
 else(DOXYGEN_FOUND)
     option(ENABLE_DOXYGEN "Build docs using Doxygen" OFF)
 endif(DOXYGEN_FOUND)
-
-########################################################################
-# PyBind11
-########################################################################
-add_subdirectory(pybind11)
-# Probably the preferred way long term:
-# find_package(pybind11 REQUIRED)
-
-execute_process(
-    COMMAND "${PYTHON_EXECUTABLE}" -c
-    "from __future__ import print_function\ntry:\n import numpy\n import os\n inc_path = numpy.get_include()\n if os.path.exists(os.path.join(inc_path, 'numpy', 'arrayobject.h')):\n  print(inc_path, end='')\nexcept:\n pass"
-    OUTPUT_VARIABLE PYTHON_NUMPY_INCLUDE_DIR)
-
 
 ########################################################################
 # Create uninstall target
@@ -158,7 +145,6 @@ add_custom_target(uninstall
     ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
     )
 
-
 ########################################################################
 # Add subdirectories
 ########################################################################
@@ -166,7 +152,6 @@ add_subdirectory(include/symbolmapping)
 add_subdirectory(lib)
 add_subdirectory(apps)
 add_subdirectory(docs)
-add_subdirectory(swig)
 add_subdirectory(python)
 add_subdirectory(grc)
 

@@ -4,7 +4,7 @@ tags: # Tags are arbitrary, but look at CGRAN what other authors are using
   - sdr
   - constellation
   - symbolmapping
-  -interleaving
+  - interleaving
 author:
   - Johannes <demel@ant.uni-bremen.de>
 copyright_owner:
@@ -15,6 +15,3 @@ repo: https://github.com/ant-uni-bremen/gr-symbolmapping
 website: ant.uni-bremen.de
 #icon: <icon_url> # Put a URL to a square image here that will be used as an icon on CGRAN
 ---
-A longer, multi-line description of gr-symbolmapping.
-You may use some *basic* Markdown here.
-If left empty, it will try to find a README file instead.

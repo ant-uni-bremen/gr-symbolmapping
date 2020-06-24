@@ -21,7 +21,7 @@
 
 from gnuradio import gr, gr_unittest
 from gnuradio import blocks
-import symbolmapping_swig as symbolmapping
+import symbolmapping_python as symbolmapping
 import numpy as np
 from symbol_constellation import generate_gray_constellation
 from symbol_constellation import map_to_constellation
@@ -40,7 +40,7 @@ class qa_symbol_mapper_bc(gr_unittest.TestCase):
 
     def test_001_init(self):
         for co in (5,7,9):
-            self.assertRaises((RuntimeError, TypeError), symbolmapping.symbol_mapper_bc,
+            self.assertRaises((RuntimeError, TypeError, ValueError), symbolmapping.symbol_mapper_bc,
                               co, "GRAY", False)
 
     def verify_constellation_unpacked(self, constellation_order,

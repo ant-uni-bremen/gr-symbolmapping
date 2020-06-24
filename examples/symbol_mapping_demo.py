@@ -81,12 +81,13 @@ class symbol_mapping_demo(gr.top_block, Qt.QWidget):
         # Blocks
         ##################################################
         self.symbolmapping_symbol_mapper_bc_0 = symbolmapping.symbol_mapper_bc(constellation_order, 'GRAY', True)
-        self.symbolmapping_symbol_demapper_cf_0 = symbolmapping.symbol_demapper_cf(constellation_order, 'GRAY')
+        self.symbolmapping_symbol_demapper_cf_0 = symbolmapping.symbol_demapper_cf(constellation_order, 'GRAY', 'snr')
         self.qtgui_time_sink_x_0 = qtgui.time_sink_f(
             1024, #size
             samp_rate, #samp_rate
             "", #name
-            2 #number of inputs
+            2, #number of inputs
+            None # parent
         )
         self.qtgui_time_sink_x_0.set_update_time(0.10)
         self.qtgui_time_sink_x_0.set_y_axis(-1, 260)
@@ -132,7 +133,8 @@ class symbol_mapping_demo(gr.top_block, Qt.QWidget):
         self.qtgui_const_sink_x_0 = qtgui.const_sink_c(
             1024, #size
             "", #name
-            1 #number of inputs
+            1, #number of inputs
+            None # parent
         )
         self.qtgui_const_sink_x_0.set_update_time(0.10)
         self.qtgui_const_sink_x_0.set_y_axis(-2, 2)
