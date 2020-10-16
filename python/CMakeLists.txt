@@ -9,7 +9,10 @@
 ########################################################################
 # Include python install macros
 ########################################################################
-include(GrPython)
+if(GNURADIO_FOUND)
+    include(GrPython)
+endif()
+
 if(NOT PYTHONINTERP_FOUND)
     return()
 endif()
@@ -19,22 +22,36 @@ add_subdirectory(bindings)
 ########################################################################
 # Install python sources
 ########################################################################
-GR_PYTHON_INSTALL(
-    FILES
+
+list(APPEND python_install_files
     __init__.py
     symbol_constellation.py
-    interleaver_indices.py
-    DESTINATION ${GR_PYTHON_DIR}/symbolmapping
-)
+    interleaver_indices.py)
+
+if(GNURADIO_FOUND)
+    GR_PYTHON_INSTALL(
+        FILES
+        ${python_install_files}
+        DESTINATION ${GR_PYTHON_DIR}/symbolmapping
+    )
+else()
+    install(
+        FILES
+        ${python_install_files}
+        DESTINATION ${PYTHON_DIR}/symbolmapping
+    )
+endif()
 
 ########################################################################
 # Handle the unit tests
 ########################################################################
-include(GrTest)
+if(GNURADIO_FOUND)
+    include(GrTest)
 
-set(GR_TEST_TARGET_DEPS gnuradio-symbolmapping)
-set(GR_TEST_PYTHON_DIRS ${CMAKE_BINARY_DIR}/python/bindings)
-GR_ADD_TEST(qa_interleaver ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_interleaver.py)
-GR_ADD_TEST(qa_python_bindings ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_python_bindings.py)
-GR_ADD_TEST(qa_symbol_mapper_bc ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_symbol_mapper_bc.py)
-GR_ADD_TEST(qa_symbol_demapper_cf ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_symbol_demapper_cf.py)
+    set(GR_TEST_TARGET_DEPS gnuradio-symbolmapping)
+    set(GR_TEST_PYTHON_DIRS ${CMAKE_BINARY_DIR}/python/bindings)
+    GR_ADD_TEST(qa_interleaver ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_interleaver.py)
+    GR_ADD_TEST(qa_python_bindings ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_python_bindings.py)
+    GR_ADD_TEST(qa_symbol_mapper_bc ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_symbol_mapper_bc.py)
+    GR_ADD_TEST(qa_symbol_demapper_cf ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_symbol_demapper_cf.py)
+endif()

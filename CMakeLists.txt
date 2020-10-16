@@ -73,10 +73,16 @@ ENDIF()
 ########################################################################
 # Install directories
 ########################################################################
-find_package(Gnuradio "3.9" REQUIRED)
-include(GrVersion)
+find_package(Gnuradio "3.9")
 
-include(GrPlatform) #define LIB_SUFFIX
+IF(GNURADIO_FOUND)
+    include(GrVersion)
+
+    include(GrPlatform) #define LIB_SUFFIX
+ELSE()
+    find_package(Volk REQUIRED)
+    find_package(ORC)
+ENDIF()
 
 if(NOT CMAKE_MODULES_DIR)
   set(CMAKE_MODULES_DIR lib${LIB_SUFFIX}/cmake)
@@ -149,11 +155,28 @@ add_custom_target(uninstall
 # Add subdirectories
 ########################################################################
 add_subdirectory(include/symbolmapping)
-add_subdirectory(lib)
-add_subdirectory(apps)
-add_subdirectory(docs)
+IF(GNURADIO_FOUND)
+    add_subdirectory(lib)
+    add_subdirectory(apps)
+    add_subdirectory(docs)
+    add_subdirectory(grc)
+ELSE()
+    ########################################################################
+    # Sets the python installation directory PYTHON_DIR
+    ########################################################################
+    if(NOT DEFINED PYTHON_DIR)
+execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "
+from distutils import sysconfig
+print(sysconfig.get_python_lib(plat_specific=True, prefix=''))
+" OUTPUT_VARIABLE PYTHON_DIR OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+    endif()
+    file(TO_CMAKE_PATH ${PYTHON_DIR} PYTHON_DIR)
+    set(GR_PYTHON_DIR ${PYTHON_DIR})
+    message(STATUS "The PYTHON install dir: ${PYTHON_DIR}")
+ENDIF()
+
 add_subdirectory(python)
-add_subdirectory(grc)
 
 ########################################################################
 # Install cmake search helper for this library

@@ -20,9 +20,10 @@ namespace py = pybind11;
 /**************************************/
 // BINDING_FUNCTION_PROTOTYPES(
 void bind_bit_interleaver(py::module& m);
+void bind_symbol_mapper(py::module& m);
+
 void bind_interleaver(py::module& m);
 void bind_symbol_demapper_cf(py::module& m);
-void bind_symbol_mapper(py::module& m);
 void bind_symbol_mapper_bc(py::module& m);
 // ) END BINDING_FUNCTION_PROTOTYPES
 
@@ -44,8 +45,9 @@ PYBIND11_MODULE(symbolmapping_python, m)
     init_numpy();
 
     // Allow access to base block methods
+#ifndef SKIP_GNURADIO
     py::module::import("gnuradio.gr");
-
+#endif
     /**************************************/
     /* The following comment block is used for
     /* gr_modtool to insert binding function calls
@@ -53,9 +55,12 @@ PYBIND11_MODULE(symbolmapping_python, m)
     /**************************************/
     // BINDING_FUNCTION_CALLS(
     bind_bit_interleaver(m);
+    bind_symbol_mapper(m);
+
+#ifndef SKIP_GNURADIO
     bind_interleaver(m);
     bind_symbol_demapper_cf(m);
-    bind_symbol_mapper(m);
     bind_symbol_mapper_bc(m);
+#endif
     // ) END BINDING_FUNCTION_CALLS
 }
