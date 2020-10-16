@@ -9,7 +9,7 @@
 ########################################################################
 # Include python install macros
 ########################################################################
-if(GNURADIO_FOUND)
+if(Gnuradio_FOUND)
     include(GrPython)
 endif()
 
@@ -28,7 +28,7 @@ list(APPEND python_install_files
     symbol_constellation.py
     interleaver_indices.py)
 
-if(GNURADIO_FOUND)
+if(Gnuradio_FOUND)
     GR_PYTHON_INSTALL(
         FILES
         ${python_install_files}
@@ -45,7 +45,7 @@ endif()
 ########################################################################
 # Handle the unit tests
 ########################################################################
-if(GNURADIO_FOUND)
+if(Gnuradio_FOUND)
     include(GrTest)
 
     set(GR_TEST_TARGET_DEPS gnuradio-symbolmapping)

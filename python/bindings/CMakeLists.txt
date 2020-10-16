@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 
-if(GNURADIO_FOUND)
+if(Gnuradio_FOUND)
     GR_PYTHON_CHECK_MODULE_RAW(
         "pygccxml"
         "import pygccxml"
@@ -26,7 +26,7 @@ list(APPEND symbolmapping_python_files
     symbol_mapper_python.cc
     python_bindings.cc)
 
-if(GNURADIO_FOUND)
+if(Gnuradio_FOUND)
     list(APPEND symbolmapping_python_files
         interleaver_python.cc
         symbol_demapper_cf_python.cc

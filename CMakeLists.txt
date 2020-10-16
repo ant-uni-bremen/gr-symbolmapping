@@ -73,13 +73,17 @@ ENDIF()
 ########################################################################
 # Install directories
 ########################################################################
-find_package(Gnuradio "3.9")
+find_package(Gnuradio "3.9" REQUIRED)
 
-IF(GNURADIO_FOUND)
+IF(Gnuradio_FOUND)
+    message(STATUS "FOUND GNU Radio! Proceeding with full installation...")
+
     include(GrVersion)
 
     include(GrPlatform) #define LIB_SUFFIX
 ELSE()
+    message(STATUS "GNU Radio missing! Proceeding with Python bindings installation...")
+
     find_package(Volk REQUIRED)
     find_package(ORC)
 ENDIF()
@@ -155,7 +159,7 @@ add_custom_target(uninstall
 # Add subdirectories
 ########################################################################
 add_subdirectory(include/symbolmapping)
-IF(GNURADIO_FOUND)
+IF(Gnuradio_FOUND)
     add_subdirectory(lib)
     add_subdirectory(apps)
     add_subdirectory(docs)
