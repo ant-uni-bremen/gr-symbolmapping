@@ -73,7 +73,7 @@ ENDIF()
 ########################################################################
 # Install directories
 ########################################################################
-find_package(Gnuradio "3.9" REQUIRED)
+find_package(Gnuradio "3.9")
 
 IF(Gnuradio_FOUND)
     message(STATUS "FOUND GNU Radio! Proceeding with full installation...")
