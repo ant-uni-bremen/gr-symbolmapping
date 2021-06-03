@@ -104,7 +104,7 @@ void symbol_demapper_cf_impl::handle_tag(const tag_t& tag)
     // std::cout << pmt::is_vector(tag.value) << ", " << pmt::is_f32vector(tag.value) <<
     // std::endl;
     if (pmt::is_f32vector(tag.value)) {
-        // std::cout << "Vector SNR" << std::endl;
+        // std::cout << "Vector SNR: " << tag.key << std::endl;
         auto vec = pmt::f32vector_elements(tag.value);
         auto snrs = volk::vector<float>(vec.begin(), vec.end());
         update_snr(snrs);
@@ -122,12 +122,11 @@ int symbol_demapper_cf_impl::work(int noutput_items,
 {
     const gr_complex* in = (const gr_complex*)input_items[0];
     float* out = (float*)output_items[0];
-    // const auto tag_key = pmt::string_to_symbol("snr");
+
     std::vector<tag_t> tags;
     const uint64_t ninput_items = noutput_items / interpolation();
     get_tags_in_range(tags, 0, nitems_read(0), nitems_read(0) + ninput_items, d_tag_key);
-    // std::cout << "nread: " << nitems_read(0) <<  ", nout: " << noutput_items <<
-    // std::endl;
+
     if (tags.size() > 0) {
         uint64_t last_offset = nitems_read(0);
         for (auto& tag : tags) {
