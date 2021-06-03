@@ -54,3 +54,13 @@ after importing by using:
 ## Contributions
 
 Pull Requests are highly welcome to add more standardized mappings aka constellations aka alphabets.
+
+
+## References
+For reference have a look at the following papers and standard documents
+
+* [ETSI 138.211 TS "5G; NR; Physical channels and modulation"](https://www.etsi.org/deliver/etsi_ts/138200_138299/138211/16.02.00_60/ts_138211v160200p.pdf)
+* [Caire et al. "Bit-Interleaved Coded Modulation"](https://doi.org/10.1109/18.669123)
+* [Tosato et al. "Simplified soft-output demapper for binary interleaved COFDM with application to HIPERLAN/2"](https://doi.org/10.1109/ICC.2002.996940)
+* [Allpress et al. "Exact and Approximated Expressions of the Log-Likelihood Ratio for 16-QAM Signals"](https://doi.org/10.1109/ACSSC.2004.1399245)
+* [Mao et al. "A low complexity 256QAM soft demapper for 5G mobile system"](https://doi.org/10.1109/EuCNC.2016.7560996)

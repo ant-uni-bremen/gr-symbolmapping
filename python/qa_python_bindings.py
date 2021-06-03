@@ -90,7 +90,7 @@ class qa_constellation(gr_unittest.TestCase):
 
 class qa_SymbolMapping(gr_unittest.TestCase):
     def setUp(self):
-        self._orders = np.array([1, 2, 3, 4, 6])
+        self._orders = np.array([1, 2, 3, 4, 6, 8])
         self._precision = 1e-6
 
     def tearDown(self):
@@ -100,7 +100,6 @@ class qa_SymbolMapping(gr_unittest.TestCase):
         self.assertTrue(np.all(np.abs(a - b) < self._precision))
 
     def test_001_constellation_ref(self):
-        orders = np.array([1, 2, 4, 6])
         for co in self._orders:
             dm = symbolmapping.SymbolMapping(co)
             c, b = generate_constellation(co)
@@ -117,8 +116,7 @@ class qa_SymbolMapping(gr_unittest.TestCase):
 
     def test_003_constellation_set(self):
         dm = symbolmapping.SymbolMapping(1)
-        orders = np.array([1, 2, 4, 6])
-        for co in orders:
+        for co in self._orders:
             dm.setConstellationOrder(co)
             c, b = generate_constellation(co)
             self.assertVectorAlmostEqual(c, dm.constellation())
@@ -139,29 +137,41 @@ class qa_SymbolMapping(gr_unittest.TestCase):
             bits = np.random.randint(0, 2, co * 500).astype(np.uint8)
             symbols = dm.map_to_constellation(bits)
             ln_probs = dm.calculate_ln_probabilities(symbols, snr_db)
-            snr_lin = symbolmapping.db2lin(snr_db)
-            c128cstl = dm.constellation().astype(np.complex128)
             ref_ln_probs = calculate_symbol_log_probabilities(symbols,
-                                                            dm.constellation(),
-                                                            snr_db).flatten()
+                                                              dm.constellation(),
+                                                              snr_db).flatten()
             self.assertFloatTuplesAlmostEqual(ref_ln_probs * .5, ln_probs, 4)
 
     def test_006_llr_calculation(self):
-        for co in (2, 4, 6):
+        for co in (2, 4, 6, 8):
             dm = symbolmapping.SymbolMapping(co)
             bits = np.random.randint(0, 2, co * 5).astype(np.uint8)
             symbols = dm.map_to_constellation(bits)
 
+            llrs_d = dm.demap_llrs(symbols, float(3.0))
+
+            if co > 6:
+                rb = np.sign(llrs_d) - 1.
+                rb /= -2.
+                rb = rb.astype(np.uint8)
+                np.testing.assert_array_equal(bits, rb)
+
+                continue
+
             ref_ln_probs = calculate_symbol_log_probabilities(symbols,
-                                                            dm.constellation(),
-                                                            float(3.0))
+                                                              dm.constellation(),
+                                                              float(3.0))
+
             ref_llrs = calculate_llrs(ref_ln_probs) * .5
 
-            llrs_d = dm.demap_llrs(symbols, float(3.0))
             if co > 3:
+                rb = np.sign(llrs_d) - 1.
+                rb /= -2.
+                rb = rb.astype(np.uint8)
                 self.assertTrue(np.all(np.sign(ref_llrs) == np.sign(llrs_d)))
             else:
-                self.assertTrue(np.all(np.abs(ref_llrs - llrs_d) < self._precision))
+                self.assertTrue(
+                    np.all(np.abs(ref_llrs - llrs_d) < self._precision))
 
     def test_007_constellation_type(self):
         dm = symbolmapping.SymbolMapping(4, "BORonka")
@@ -199,6 +209,7 @@ class qa_SymbolMapping(gr_unittest.TestCase):
             ref = lin2db(s)
             sls = symbolmapping.lin2db(s)
             self.assertTrue(np.abs(ref - sls) < 1e-5)
+
 
 if __name__ == '__main__':
     gr_unittest.run(qa_interleaver)

@@ -35,8 +35,23 @@ blocks:
 - name: constellation_order
   id: variable
   parameters:
-    comment: ''
-    value: '6'
+    comment: 'Constellation order is defines the number of bits mapped to 1 complex
+      symbol.
+
+
+      1: BPSK
+
+      2: QPSK
+
+      4: 16:QAM
+
+      6: 64QAM
+
+      8: 256QAM
+
+
+      cf. ETSI 138.211 - V15.3.0, 5G NR: Physical channels and modulation'
+    value: '8'
   states:
     bus_sink: false
     bus_source: false
@@ -48,7 +63,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '32000'
+    value: 32000 * 2
   states:
     bus_sink: false
     bus_source: false
@@ -409,6 +424,7 @@ blocks:
     constellation_type: GRAY
     maxoutbuf: '0'
     minoutbuf: '0'
+    snr_tag_name: snr
   states:
     bus_sink: false
     bus_source: false

@@ -180,16 +180,40 @@ def map_to_constellation(bits, constellation):
 
 def main():
     import matplotlib.pyplot as plt
-    cstl, bits = generate_constellation(8)
-    plt.scatter(cstl.real, cstl.imag)
+    from latex_plot_magic import set_size
+    latex_textwidth = 327.20668  # pt
+    fig_size = set_size(latex_textwidth)
+    fig = plt.figure(figsize= (fig_size[0], fig_size[0] * 3. / 4.))
+
+    markersize = 40
+
+    cstl, bits = generate_constellation(4)
+    plt.scatter(cstl.real, cstl.imag, marker='o', s=markersize, label='16QAM')
     for c, b in zip(cstl, bits):
         pos = (c.real, c.imag)
-        plt.annotate(b, pos)
+        plt.annotate(b, pos, xytext=(-10, 5), textcoords='offset points',)
+
+    cstl, bits = generate_constellation(2)
+    plt.scatter(cstl.real, cstl.imag, marker='x', s=markersize, label='QPSK')
+    for c, b in zip(cstl, bits):
+        pos = (c.real, c.imag)
+        plt.annotate(b, pos, xytext=(-5, 5), textcoords='offset points')
+
+    # cstl, bits = generate_constellation(6)
+    # plt.scatter(cstl.real, cstl.imag, marker='o', s=markersize, label='64QAM')
+    # for c, b in zip(cstl, bits):
+    #     pos = (c.real, c.imag)
+    #     plt.annotate(b, pos, xytext=(-10, 5), textcoords='offset points',)
 
     plt.grid()
-    plt.xlabel('inphase')
-    plt.ylabel('quadrature')
+    plt.legend(fontsize='small')
+    plt.xlabel('Inphase')
+    plt.ylabel('Quadrature')
+    # plt.ylim((-1., 1.11))
+    ticks = plt.yticks()
+    plt.yticks((-1., -.5, 0.0, .5, 1.))
     plt.tight_layout()
+    # plt.savefig('constellation_qpsk_16qam.pgf')
     plt.show()
 
 

@@ -39,9 +39,11 @@ public:
     };
     std::string constellationType() { return _cstl_type; };
 
+    // Use constellation as LUT to obtain num_bits / constellationOrder complex symbols
     void map_to_constellation(fcmplx* symbols,
                               const unsigned char* bits,
                               const unsigned num_bits);
+
     void calculate_ln_probabilities(float* ln_probs,
                                     const fcmplx* rx_symbols,
                                     const unsigned num_symbols,
@@ -50,8 +52,8 @@ public:
                                         const fcmplx* rx_symbols,
                                         const float* snr_lin,
                                         const unsigned num_symbols);
-
     void calculate_llrs(float* llrs, const float* ln_probs, const unsigned num_symbols);
+
     void demap_llrs(float* llrs,
                     const fcmplx* rx_symbols,
                     const unsigned num_symbols,
@@ -95,6 +97,7 @@ private:
     void generate_16qam_boronka_constellation();
     void generate_16qam_carson_constellation();
     void generate_64qam_gray_constellation();
+    void generate_256qam_gray_constellation();
 
     void calculate_symbol_ln_probabilities(float* ln_probs,
                                            const fcmplx rx_symbol,
@@ -125,6 +128,14 @@ private:
                           const fcmplx* rx_symbols,
                           const unsigned num_symbols,
                           const float snr_db);
+    void demap_llrs_64qam(float* llrs,
+                          const fcmplx* rx_symbols,
+                          const unsigned num_symbols,
+                          const float snr_db);
+    void demap_llrs_256qam(float* llrs,
+                           const fcmplx* rx_symbols,
+                           const unsigned num_symbols,
+                           const float snr_db);
 
     void demap_llrs_vec_generic(float* llrs,
                                 const fcmplx* rx_symbols,
@@ -142,7 +153,14 @@ private:
                               const fcmplx* rx_symbols,
                               const float* snr_lin,
                               const unsigned num_symbols);
-
+    void demap_llrs_vec_64qam(float* llrs,
+                              const fcmplx* rx_symbols,
+                              const float* snr_lin,
+                              const unsigned num_symbols);
+    void demap_llrs_vec_256qam(float* llrs,
+                               const fcmplx* rx_symbols,
+                               const float* snr_lin,
+                               const unsigned num_symbols);
 
     template <int constellation_size>
     void calculate_symbol_ln_probabilities_t(float* ln_probs,
