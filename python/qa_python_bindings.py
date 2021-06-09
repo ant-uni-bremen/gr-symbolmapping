@@ -143,19 +143,18 @@ class qa_SymbolMapping(gr_unittest.TestCase):
             self.assertFloatTuplesAlmostEqual(ref_ln_probs * .5, ln_probs, 4)
 
     def test_006_llr_calculation(self):
-        for co in (2, 4, 6, 8):
+        for co in self._orders:
             dm = symbolmapping.SymbolMapping(co)
             bits = np.random.randint(0, 2, co * 5).astype(np.uint8)
             symbols = dm.map_to_constellation(bits)
 
             llrs_d = dm.demap_llrs(symbols, float(3.0))
 
-            if co > 6:
+            if co in (1, 3) or co > 6:
                 rb = np.sign(llrs_d) - 1.
                 rb /= -2.
                 rb = rb.astype(np.uint8)
                 np.testing.assert_array_equal(bits, rb)
-
                 continue
 
             ref_ln_probs = calculate_symbol_log_probabilities(symbols,

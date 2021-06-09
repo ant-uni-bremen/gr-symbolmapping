@@ -9,7 +9,6 @@
 #include <volk/volk.h>
 #include <bitset>
 #include <cctype>
-#include <chrono>
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
@@ -266,10 +265,6 @@ void SymbolMapping::calculate_ln_probabilities_vec(float* ln_probs,
                                                    const float* snr_lin,
                                                    const unsigned num_symbols)
 {
-    std::chrono::high_resolution_clock::time_point start =
-        std::chrono::high_resolution_clock::now();
-
-
     switch (_constellation_size) {
     // case 2:
     //     calculate_ln_probabilities_t<2>(ln_probs, rx_symbols, snr_lin, num_symbols);
@@ -290,11 +285,6 @@ void SymbolMapping::calculate_ln_probabilities_vec(float* ln_probs,
             ln_probs += _constellation_size;
         }
     }
-
-    std::chrono::high_resolution_clock::time_point end =
-        std::chrono::high_resolution_clock::now();
-    _ln_prob_calculation_duration =
-        std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 }
 
 void SymbolMapping::calculate_ln_probabilities(float* ln_probs,
@@ -310,8 +300,6 @@ void SymbolMapping::calculate_ln_probabilities(float* ln_probs,
      * Assume E(x^2) = 1
      * SNR_lin = 1 / sigma_n2
      */
-    std::chrono::high_resolution_clock::time_point start =
-        std::chrono::high_resolution_clock::now();
 
     const float snr_lin = convert_snr_db2lin(snr_db);
     switch (_constellation_size) {
@@ -334,11 +322,6 @@ void SymbolMapping::calculate_ln_probabilities(float* ln_probs,
             ln_probs += _constellation_size;
         }
     }
-
-    std::chrono::high_resolution_clock::time_point end =
-        std::chrono::high_resolution_clock::now();
-    _ln_prob_calculation_duration =
-        std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 }
 
 
@@ -362,17 +345,11 @@ void SymbolMapping::calculate_llrs(float* llrs,
                                    const float* ln_probs,
                                    const unsigned num_symbols)
 {
-    std::chrono::high_resolution_clock::time_point start =
-        std::chrono::high_resolution_clock::now();
     for (unsigned i = 0; i < num_symbols; ++i) {
         calculate_symbol_llrs(llrs, ln_probs);
         llrs += _constellation_order;
         ln_probs += _constellation_size;
     }
-    std::chrono::high_resolution_clock::time_point end =
-        std::chrono::high_resolution_clock::now();
-    _llr_calculation_duration =
-        std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 }
 
 void SymbolMapping::calculate_symbol_llrs(float* llrs, const float* ln_probs)
@@ -408,18 +385,12 @@ void SymbolMapping::calculate_llrs_apriori(float* llrs,
                                            const float* ln_probs,
                                            const unsigned num_symbols)
 {
-    std::chrono::high_resolution_clock::time_point start =
-        std::chrono::high_resolution_clock::now();
     for (unsigned i = 0; i < num_symbols; ++i) {
         calculate_symbol_llrs_apriori(llrs, apllrs, ln_probs);
         llrs += _constellation_order;
         apllrs += _constellation_order;
         ln_probs += _constellation_size;
     }
-    std::chrono::high_resolution_clock::time_point end =
-        std::chrono::high_resolution_clock::now();
-    _apllr_calculation_duration =
-        std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 }
 
 void SymbolMapping::calculate_symbol_llrs_apriori(float* llrs,
@@ -477,8 +448,6 @@ void SymbolMapping::demap_llrs_vec(float* llrs,
                                    const float* snr_lin,
                                    const unsigned num_symbols)
 {
-    std::chrono::high_resolution_clock::time_point start =
-        std::chrono::high_resolution_clock::now();
     switch (_constellation_order) {
     case 1:
         demap_llrs_vec_bpsk(llrs, rx_symbols, snr_lin, num_symbols);
@@ -492,13 +461,12 @@ void SymbolMapping::demap_llrs_vec(float* llrs,
     case 6:
         demap_llrs_vec_64qam(llrs, rx_symbols, snr_lin, num_symbols);
         break;
+    case 8:
+        demap_llrs_vec_256qam(llrs, rx_symbols, snr_lin, num_symbols);
+        break;
     default:
         demap_llrs_vec_generic(llrs, rx_symbols, snr_lin, num_symbols);
     }
-    std::chrono::high_resolution_clock::time_point end =
-        std::chrono::high_resolution_clock::now();
-    _demap_llrs_duration =
-        std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 }
 
 void SymbolMapping::demap_llrs(float* llrs,
@@ -506,8 +474,6 @@ void SymbolMapping::demap_llrs(float* llrs,
                                const unsigned num_symbols,
                                const float snr_db)
 {
-    std::chrono::high_resolution_clock::time_point start =
-        std::chrono::high_resolution_clock::now();
     const float snr_lin = convert_snr_db2lin(snr_db);
     switch (_constellation_order) {
     case 1:
@@ -522,13 +488,12 @@ void SymbolMapping::demap_llrs(float* llrs,
     case 6:
         demap_llrs_64qam(llrs, rx_symbols, num_symbols, snr_lin);
         break;
+    case 8:
+        demap_llrs_256qam(llrs, rx_symbols, num_symbols, snr_lin);
+        break;
     default:
         demap_llrs_generic(llrs, rx_symbols, num_symbols, snr_db);
     }
-    std::chrono::high_resolution_clock::time_point end =
-        std::chrono::high_resolution_clock::now();
-    _demap_llrs_duration =
-        std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 }
 
 void SymbolMapping::demap_llrs_vec_generic(float* llrs,
@@ -724,23 +689,34 @@ void SymbolMapping::demap_llrs_vec_256qam(float* llrs,
                                           const float* snr_lin,
                                           const unsigned num_symbols)
 {
-    constexpr float normalization_factor = 2.0f / std::sqrt(42.0f);
-    constexpr float decision_bound1 = 2.0f * normalization_factor;
-    constexpr float decision_bound2 = 1.0f * normalization_factor;
+    constexpr float normalization_factor = 2.0f / std::sqrt(170.0f);
+    constexpr float decision_bound1 = 4.0f * normalization_factor;
+    constexpr float decision_bound2 = 2.0f * normalization_factor;
+    constexpr float decision_bound3 = 1.0f * normalization_factor;
 
     for (unsigned i = 0; i < num_symbols; ++i) {
         const float scaling_factor = normalization_factor * *snr_lin++;
         const fcmplx sym = *rx_symbols++;
         const float symi = real(sym);
         const float symq = imag(sym);
+        // layer 0
         *llrs++ = scaling_factor * symi;
         *llrs++ = scaling_factor * symq;
+        // layer 1: bound @ 8
         *llrs++ = scaling_factor * (decision_bound1 - std::abs(symi));
         *llrs++ = scaling_factor * (decision_bound1 - std::abs(symq));
+        // layer 2: bound @ 4
         *llrs++ = scaling_factor *
                   (decision_bound2 - std::abs(std::abs(symi) - decision_bound1));
         *llrs++ = scaling_factor *
                   (decision_bound2 - std::abs(std::abs(symq) - decision_bound1));
+        // layer 3: bound @ 2
+        *llrs++ = scaling_factor *
+                  (decision_bound3 - std::abs(std::abs(std::abs(symi) - decision_bound1) -
+                                              decision_bound2));
+        *llrs++ = scaling_factor *
+                  (decision_bound3 - std::abs(std::abs(std::abs(symq) - decision_bound1) -
+                                              decision_bound2));
     }
 }
 
@@ -749,22 +725,33 @@ void SymbolMapping::demap_llrs_256qam(float* llrs,
                                       const unsigned num_symbols,
                                       const float snr_lin)
 {
-    constexpr float normalization_factor = 2.0f / std::sqrt(42.0f);
-    constexpr float decision_bound1 = 2.0f * normalization_factor;
-    constexpr float decision_bound2 = 1.0f * normalization_factor;
+    constexpr float normalization_factor = 2.0f / std::sqrt(170.0f);
+    constexpr float decision_bound1 = 4.0f * normalization_factor;
+    constexpr float decision_bound2 = 2.0f * normalization_factor;
+    constexpr float decision_bound3 = 1.0f * normalization_factor;
     const float scaling_factor = snr_lin * normalization_factor;
 
     for (unsigned i = 0; i < num_symbols; ++i) {
         const fcmplx sym = *rx_symbols++;
         const float symi = real(sym);
         const float symq = imag(sym);
+        // layer 0
         *llrs++ = scaling_factor * symi;
         *llrs++ = scaling_factor * symq;
+        // layer 1: bound @ 8
         *llrs++ = scaling_factor * (decision_bound1 - std::abs(symi));
         *llrs++ = scaling_factor * (decision_bound1 - std::abs(symq));
+        // layer 2: bound @ 4
         *llrs++ = scaling_factor *
                   (decision_bound2 - std::abs(std::abs(symi) - decision_bound1));
         *llrs++ = scaling_factor *
                   (decision_bound2 - std::abs(std::abs(symq) - decision_bound1));
+        // layer 3: bound @ 2
+        *llrs++ = scaling_factor *
+                  (decision_bound3 - std::abs(std::abs(std::abs(symi) - decision_bound1) -
+                                              decision_bound2));
+        *llrs++ = scaling_factor *
+                  (decision_bound3 - std::abs(std::abs(std::abs(symq) - decision_bound1) -
+                                              decision_bound2));
     }
 }

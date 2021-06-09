@@ -59,16 +59,18 @@ public:
                     const fcmplx* rx_symbols,
                     const unsigned num_symbols,
                     const float snr_db);
+    void demap_llrs_generic(float* llrs,
+                            const fcmplx* rx_symbols,
+                            const unsigned num_symbols,
+                            const float snr_db);
     void demap_llrs_vec(float* llrs,
                         const fcmplx* rx_symbols,
                         const float* snr_lin,
                         const unsigned num_symbols);
-
-
-    size_t ln_prob_calculation_duration_ns() { return _ln_prob_calculation_duration; };
-    size_t llr_calculation_duration_ns() { return _llr_calculation_duration; };
-    size_t apllr_calculation_duration_ns() { return _apllr_calculation_duration; };
-    size_t demap_llrs_duration_ns() { return _demap_llrs_duration; };
+    void demap_llrs_vec_generic(float* llrs,
+                                const fcmplx* rx_symbols,
+                                const float* snr_lin,
+                                const unsigned num_symbols);
 
     void calculate_llrs_apriori(float* llrs,
                                 const float* apllrs,
@@ -76,11 +78,6 @@ public:
                                 const unsigned num_symbols);
 
 private:
-    size_t _ln_prob_calculation_duration;
-    size_t _llr_calculation_duration;
-    size_t _demap_llrs_duration;
-    size_t _apllr_calculation_duration;
-
     unsigned _constellation_order;
     unsigned _constellation_size;
     std::string _cstl_type;
@@ -109,10 +106,6 @@ private:
                                        const float* ln_probs);
     float calculate_apriori_sum(const float* apllrs, const unsigned bitmask);
 
-    void demap_llrs_generic(float* llrs,
-                            const fcmplx* rx_symbols,
-                            const unsigned num_symbols,
-                            const float snr_db);
     void demap_llrs_bpsk(float* llrs,
                          const fcmplx* rx_symbols,
                          const unsigned num_symbols,
@@ -138,10 +131,6 @@ private:
                            const unsigned num_symbols,
                            const float snr_db);
 
-    void demap_llrs_vec_generic(float* llrs,
-                                const fcmplx* rx_symbols,
-                                const float* snr_lin,
-                                const unsigned num_symbols);
     void demap_llrs_vec_bpsk(float* llrs,
                              const fcmplx* rx_symbols,
                              const float* snr_lin,
