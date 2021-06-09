@@ -684,41 +684,53 @@ void SymbolMapping::demap_llrs_64qam(float* llrs,
     }
 }
 
-void SymbolMapping::demap_llrs_vec_256qam(float* llrs,
-                                          const fcmplx* rx_symbols,
-                                          const float* snr_lin,
-                                          const unsigned num_symbols)
+namespace {
+void inline demap_256qam_symbol(float* llrs,
+                                const fcmplx symbol,
+                                const float scaling_factor)
 {
     constexpr float normalization_factor = 2.0f / std::sqrt(170.0f);
     constexpr float decision_bound1 = 4.0f * normalization_factor;
     constexpr float decision_bound2 = 2.0f * normalization_factor;
     constexpr float decision_bound3 = 1.0f * normalization_factor;
 
+    const float symi = real(symbol);
+    const float symq = imag(symbol);
+    // layer 0
+    *llrs++ = scaling_factor * symi;
+    *llrs++ = scaling_factor * symq;
+    // layer 1: bound @ 8
+    *llrs++ = scaling_factor * (decision_bound1 - std::abs(symi));
+    *llrs++ = scaling_factor * (decision_bound1 - std::abs(symq));
+    // layer 2: bound @ 4
+    *llrs++ =
+        scaling_factor * (decision_bound2 - std::abs(std::abs(symi) - decision_bound1));
+    *llrs++ =
+        scaling_factor * (decision_bound2 - std::abs(std::abs(symq) - decision_bound1));
+    // layer 3: bound @ 2
+    *llrs++ = scaling_factor *
+              (decision_bound3 -
+               std::abs(std::abs(std::abs(symi) - decision_bound1) - decision_bound2));
+    *llrs++ = scaling_factor *
+              (decision_bound3 -
+               std::abs(std::abs(std::abs(symq) - decision_bound1) - decision_bound2));
+}
+} // namespace
+
+void SymbolMapping::demap_llrs_vec_256qam(float* llrs,
+                                          const fcmplx* rx_symbols,
+                                          const float* snr_lin,
+                                          const unsigned num_symbols)
+{
+    constexpr float normalization_factor = 2.0f / std::sqrt(170.0f);
+
     for (unsigned i = 0; i < num_symbols; ++i) {
         const float scaling_factor = normalization_factor * *snr_lin++;
-        const fcmplx sym = *rx_symbols++;
-        const float symi = real(sym);
-        const float symq = imag(sym);
-        // layer 0
-        *llrs++ = scaling_factor * symi;
-        *llrs++ = scaling_factor * symq;
-        // layer 1: bound @ 8
-        *llrs++ = scaling_factor * (decision_bound1 - std::abs(symi));
-        *llrs++ = scaling_factor * (decision_bound1 - std::abs(symq));
-        // layer 2: bound @ 4
-        *llrs++ = scaling_factor *
-                  (decision_bound2 - std::abs(std::abs(symi) - decision_bound1));
-        *llrs++ = scaling_factor *
-                  (decision_bound2 - std::abs(std::abs(symq) - decision_bound1));
-        // layer 3: bound @ 2
-        *llrs++ = scaling_factor *
-                  (decision_bound3 - std::abs(std::abs(std::abs(symi) - decision_bound1) -
-                                              decision_bound2));
-        *llrs++ = scaling_factor *
-                  (decision_bound3 - std::abs(std::abs(std::abs(symq) - decision_bound1) -
-                                              decision_bound2));
+        demap_256qam_symbol(llrs, *rx_symbols++, scaling_factor);
+        llrs += 8;
     }
 }
+
 
 void SymbolMapping::demap_llrs_256qam(float* llrs,
                                       const fcmplx* rx_symbols,
@@ -726,32 +738,10 @@ void SymbolMapping::demap_llrs_256qam(float* llrs,
                                       const float snr_lin)
 {
     constexpr float normalization_factor = 2.0f / std::sqrt(170.0f);
-    constexpr float decision_bound1 = 4.0f * normalization_factor;
-    constexpr float decision_bound2 = 2.0f * normalization_factor;
-    constexpr float decision_bound3 = 1.0f * normalization_factor;
     const float scaling_factor = snr_lin * normalization_factor;
 
     for (unsigned i = 0; i < num_symbols; ++i) {
-        const fcmplx sym = *rx_symbols++;
-        const float symi = real(sym);
-        const float symq = imag(sym);
-        // layer 0
-        *llrs++ = scaling_factor * symi;
-        *llrs++ = scaling_factor * symq;
-        // layer 1: bound @ 8
-        *llrs++ = scaling_factor * (decision_bound1 - std::abs(symi));
-        *llrs++ = scaling_factor * (decision_bound1 - std::abs(symq));
-        // layer 2: bound @ 4
-        *llrs++ = scaling_factor *
-                  (decision_bound2 - std::abs(std::abs(symi) - decision_bound1));
-        *llrs++ = scaling_factor *
-                  (decision_bound2 - std::abs(std::abs(symq) - decision_bound1));
-        // layer 3: bound @ 2
-        *llrs++ = scaling_factor *
-                  (decision_bound3 - std::abs(std::abs(std::abs(symi) - decision_bound1) -
-                                              decision_bound2));
-        *llrs++ = scaling_factor *
-                  (decision_bound3 - std::abs(std::abs(std::abs(symq) - decision_bound1) -
-                                              decision_bound2));
+        demap_256qam_symbol(llrs, *rx_symbols++, scaling_factor);
+        llrs += 8;
     }
 }
