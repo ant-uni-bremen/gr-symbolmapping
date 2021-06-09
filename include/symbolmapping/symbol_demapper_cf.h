@@ -28,7 +28,7 @@ namespace gr {
 namespace symbolmapping {
 
 /*!
- * \brief <+description of block+>
+ * \brief Compute soft bits, aka LLRs, for all bits per received symbol
  * \ingroup symbolmapping
  *
  */

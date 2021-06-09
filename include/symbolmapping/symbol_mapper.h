@@ -21,12 +21,13 @@ float db2lin(const float snr_db);
 float convert_snr_db2lin(const float snr_db);
 
 
-class SymbolMapping
+class __attribute__((visibility("default"))) SymbolMapping
 {
 public:
     SymbolMapping(unsigned constellation_order,
                   std::string cstl_type = std::string("GRAY"));
-    ~SymbolMapping();
+    SymbolMapping() = default;
+    ~SymbolMapping() = default;
     void setConstellationOrder(unsigned constellation_order);
     void setConstellationType(std::string cstl_type);
 

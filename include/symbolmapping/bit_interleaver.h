@@ -26,7 +26,7 @@
 #include <vector>
 
 
-class BitInterleaver
+class __attribute__((visibility("default"))) BitInterleaver
 {
 public:
     BitInterleaver(std::vector<size_t> interleaver_indices);

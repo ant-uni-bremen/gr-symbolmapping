@@ -32,7 +32,7 @@ SymbolMapping::SymbolMapping(unsigned constellation_order, std::string cstl_type
     setConstellationOrder(constellation_order);
 }
 
-SymbolMapping::~SymbolMapping() {}
+// SymbolMapping::~SymbolMapping() {}
 
 void SymbolMapping::update_ln_prob_buffer_size(const unsigned buffer_size)
 {

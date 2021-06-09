@@ -131,7 +131,7 @@ find_package(Doxygen)
 find_package(pybind11 REQUIRED)
 execute_process(
     COMMAND "${PYTHON_EXECUTABLE}" -c
-    "from __future__ import print_function\ntry:\n import numpy\n import os\n inc_path = numpy.get_include()\n if os.path.exists(os.path.join(inc_path, 'numpy', 'arrayobject.h')):\n  print(inc_path, end='')\nexcept:\n pass"
+    "try:\n import numpy\n import os\n inc_path = numpy.get_include()\n if os.path.exists(os.path.join(inc_path, 'numpy', 'arrayobject.h')):\n  print(inc_path, end='')\nexcept:\n pass"
     OUTPUT_VARIABLE PYTHON_NUMPY_INCLUDE_DIR)
 
 ########################################################################
@@ -188,4 +188,25 @@ add_subdirectory(python)
 
 install(FILES cmake/Modules/symbolmappingConfig.cmake
     DESTINATION ${CMAKE_MODULES_DIR}/symbolmapping
+)
+
+########################################################################
+# Variables replaced when configuring the package config files
+########################################################################
+file(TO_CMAKE_PATH "${CMAKE_INSTALL_PREFIX}"           prefix)
+file(TO_CMAKE_PATH "\${prefix}"                        exec_prefix)
+file(TO_CMAKE_PATH "\${exec_prefix}/${GR_LIBRARY_DIR}" libdir)
+file(TO_CMAKE_PATH "\${prefix}/${GR_INCLUDE_DIR}"      includedir)
+
+########################################################################
+# Create Pkg Config File
+########################################################################
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/symbolmapping.pc.in
+    ${CMAKE_CURRENT_BINARY_DIR}/symbolmapping.pc
+@ONLY)
+
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/symbolmapping.pc
+    DESTINATION ${GR_LIBRARY_DIR}/pkgconfig
 )
