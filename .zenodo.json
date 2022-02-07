@@ -1,0 +1,27 @@
+{
+    "title": "GNU Radio Symbolmapping (gr-symbolmapping)",
+    "description": "The *gr-symbolmapping* project is a Free Software Package which aims to provide fast and efficient mappers and soft demappers for standardized symbol constellations, e.g. for WiFi, LTE, and 5G NR. The available constellations are PSK/QAM constellations from BPSK to 256QAM. Besides, this project includes Python bindings via pybind11 to use these optimized implementations in Python/NumPy simulations.",
+    "license": {
+        "id": "GPL-3.0-or-later"
+    },
+    "keywords": [
+        "communication",
+        "software radio",
+        "SDR",
+        "C++",
+        "GNU Radio",
+        "modulation",
+        "mapping",
+        "soft-demapper",
+        "interleaving",
+        "Python",
+        "BICM"
+    ],
+    "creators": [
+        {
+            "affiliation": "Department of Communications Engineering, University of Bremen, Germany",
+            "name": "Demel, Johannes",
+            "orcid": "0000-0002-5434-7232"
+        }
+    ]
+}
