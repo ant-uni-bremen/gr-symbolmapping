@@ -1,3 +1,6 @@
+[![DOI](https://zenodo.org/badge/247098278.svg)](https://zenodo.org/badge/latestdoi/247098278) [![Run CI tests](https://github.com/ant-uni-bremen/gr-symbolmapping/actions/workflows/run-test.yml/badge.svg)](https://github.com/ant-uni-bremen/gr-symbolmapping/actions/workflows/run-test.yml)
+
+
 # GNU Radio Symbolmapping
 
 
