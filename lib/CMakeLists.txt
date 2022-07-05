@@ -26,7 +26,7 @@ if(NOT symbolmapping_sources)
 endif(NOT symbolmapping_sources)
 
 add_library(gnuradio-symbolmapping SHARED ${symbolmapping_sources})
-target_link_libraries(gnuradio-symbolmapping gnuradio::gnuradio-runtime gnuradio-blocks)
+target_link_libraries(gnuradio-symbolmapping gnuradio::gnuradio-runtime gnuradio::gnuradio-blocks)
 target_include_directories(gnuradio-symbolmapping
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
     PUBLIC $<INSTALL_INTERFACE:include>
