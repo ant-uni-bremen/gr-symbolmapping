@@ -16,6 +16,8 @@ Further, we want fast and efficient demappers that employ efficient approximatio
 In most systems, interleavers are employed right before symbol mapping in order to leverage full diversity in frequency-selective fading scenarios. Especially, multicarrier systems such as OFDM, GFDM or FBMC benefit from this approach.
 Thus, we add bit interleavers as well. Sometimes this interleaver is called channel interleaver.
 
+__The interleaver block is intended to be upstreamed__
+
 ## Python interface
 
 Finally, we need those functions in GNU Radio but also with a Python3 interface for use in simulations. Thus, we add a PyBind11 interface that offers just that.
