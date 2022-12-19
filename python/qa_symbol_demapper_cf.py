@@ -124,7 +124,7 @@ class qa_symbol_demapper_cf(gr_unittest.TestCase):
         data = np.random.randint(0, 2, constellation_order * nbits).astype(np.uint8)
         symbols = map_to_constellation(data, constellation)
 
-        snr = np.arange(35, dtype=np.float) + 1.
+        snr = np.arange(35, dtype=float) + 1.
         snr_step = 2.5
         tags = []
         offsets = (0, 50, 400, 450, 800)

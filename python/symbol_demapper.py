@@ -127,7 +127,7 @@ def calculate_symbol_log_probabilities(symbols, constellation, snr_db):
         snr = np.tile(snr_db, int(
             np.ceil(symbols.size / snr_db.size)))[0:symbols.size]
     else:
-        snr = np.full(symbols.size, db2lin(snr_db), dtype=np.float)
+        snr = np.full(symbols.size, db2lin(snr_db), dtype=float)
     log_probs = np.zeros((len(symbols), len(constellation)), dtype=float)
     for i, s in enumerate(symbols):
         l_prob = calculate_log_probability_vector_lin(s, constellation, snr[i])

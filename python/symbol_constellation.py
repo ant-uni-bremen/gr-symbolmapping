@@ -24,7 +24,7 @@ def generate_qpsk_gray_constellation():
     constellation_order = 2
     n_points = 2 ** constellation_order
     bit_bins = get_bit_bins(constellation_order)
-    constellation = np.zeros(n_points, dtype=np.complex)
+    constellation = np.zeros(n_points, dtype=complex)
     for i in range(n_points):
         b = list(bit_bins[i])
         c = [1 - 2 * int(j) for j in b]
@@ -37,23 +37,23 @@ def generate_8psk_gray_constellation():
     constellation_order = 3
     n_points = 2 ** constellation_order
     bit_bins = get_bit_bins(constellation_order)
-    constellation = np.zeros(n_points, dtype=np.complex)
+    constellation = np.zeros(n_points, dtype=complex)
     scale = 1.0 / np.sqrt(2.0)
-    constellation[0] = np.complex(  1.0 * scale,  1.0 * scale)
-    constellation[1] = np.complex(  1.0        ,  0.0        )
-    constellation[2] = np.complex( -1.0        ,  0.0        )
-    constellation[3] = np.complex( -1.0 * scale, -1.0 * scale)
-    constellation[4] = np.complex(  0.0        ,  1.0        )
-    constellation[5] = np.complex(  1.0 * scale, -1.0 * scale)
-    constellation[6] = np.complex( -1.0 * scale,  1.0 * scale)
-    constellation[7] = np.complex(  0.0 * scale, -1.0        )
+    constellation[0] = complex(  1.0 * scale,  1.0 * scale)
+    constellation[1] = complex(  1.0        ,  0.0        )
+    constellation[2] = complex( -1.0        ,  0.0        )
+    constellation[3] = complex( -1.0 * scale, -1.0 * scale)
+    constellation[4] = complex(  0.0        ,  1.0        )
+    constellation[5] = complex(  1.0 * scale, -1.0 * scale)
+    constellation[6] = complex( -1.0 * scale,  1.0 * scale)
+    constellation[7] = complex(  0.0 * scale, -1.0        )
     return constellation, bit_bins
 
 def generate_16qam_gray_constellation():
     constellation_order = 4
     n_points = 2 ** constellation_order
     bit_bins = get_bit_bins(constellation_order)
-    constellation = np.zeros(n_points, dtype=np.complex)
+    constellation = np.zeros(n_points, dtype=complex)
     for i in range(n_points):
         b = list(bit_bins[i])
         c = [1 - 2 * int(j) for j in b]
@@ -68,7 +68,7 @@ def generate_64qam_gray_constellation():
     constellation_order = 6
     n_points = 2 ** constellation_order
     bit_bins = get_bit_bins(constellation_order)
-    constellation = np.zeros(n_points, dtype=np.complex)
+    constellation = np.zeros(n_points, dtype=complex)
     q_lut = np.array([3, 1, 5, 7])
     for i in range(n_points):
         b = list(bit_bins[i])
@@ -84,7 +84,7 @@ def generate_256qam_gray_constellation():
     constellation_order = 8
     n_points = 2 ** constellation_order
     bit_bins = get_bit_bins(constellation_order)
-    constellation = np.zeros(n_points, dtype=np.complex)
+    constellation = np.zeros(n_points, dtype=complex)
     for i in range(n_points):
         b = list(bit_bins[i])
         c = [int(j) for j in b]
@@ -115,29 +115,27 @@ def generate_gray_constellation(constellation_order):
 
 def generate_16qam_boronka_constellation():
     constellation_order = 4
-    n_points = 2 ** constellation_order
     bit_bins = get_bit_bins(constellation_order)
-    constellation = np.zeros(n_points, dtype=np.complex)
     constellation = np.array([ 1.+3.j,  3.-3.j, -1.-3.j,  1.+1.j,
                               -3.+1.j,  3.+1.j,  1.-1.j, -3.-1.j,
                                3.+3.j, -1.-1.j, -1.+1.j, -3.-3.j,
                                1.-3.j, -1.+3.j, -3.+3.j,  3.-1.j],
-                             dtype=np.complex)
+                             dtype=complex)
     constellation /= np.sqrt(10.)
+    assert constellation.size == 2 ** constellation_order
     return constellation, bit_bins
 
 
 def generate_16qam_carson_constellation():
     constellation_order = 4
-    n_points = 2 ** constellation_order
     bit_bins = get_bit_bins(constellation_order)
-    constellation = np.zeros(n_points, dtype=np.complex)
     constellation = np.array([ 3.+3.j, -3.-3.j, -1.+3.j,  1.-3.j,
                               -3.+1.j,  3.-1.j,  1.+1.j, -1.-1.j,
                                1.-1.j, -1.+1.j, -3.-1.j,  3.+1.j,
                               -1.-3.j,  1.+3.j,  3.-3.j, -3.+3.j],
-                             dtype=np.complex)
+                             dtype=complex)
     constellation /= np.sqrt(10.)
+    assert constellation.size == 2 ** constellation_order
     return constellation, bit_bins
 
 
