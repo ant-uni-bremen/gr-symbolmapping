@@ -15,7 +15,7 @@ jobs:
     - name: configure
       run: mkdir build && cd build && cmake -DCMAKE_CXX_FLAGS="-Werror" ..
     - name: build
-      run: cmake --build build
+      run: cmake --build build -- -j2
     - name: test
       run: cd build && ctest -V
 
@@ -29,7 +29,7 @@ jobs:
             - ubuntu-22.04
     runs-on: ${{ matrix.distro }}
 
-    name: Build on ${{ matrix.distro }} w/ GR 3.10
+    name: Build w/ GR 3.10 on ${{ matrix.distro }}
 
     steps:
     - uses: actions/checkout@v3.1.0
@@ -47,14 +47,14 @@ jobs:
     - name: configure
       run: mkdir build && cd build && cmake -DCMAKE_CXX_FLAGS="-Werror" ..
     - name: build
-      run: cmake --build build
+      run: cmake --build build -- -j2
     - name: test
       run: cd build && ctest -V
 
   build-ubuntu-full-gnuradio-39:
     runs-on: ubuntu-20.04
 
-    name: Build on ubuntu-20.04 w/ GR 3.9
+    name: Build w/ GR 3.9 on ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v3.1.0
@@ -72,6 +72,6 @@ jobs:
     - name: configure
       run: mkdir build && cd build && cmake -DCMAKE_CXX_FLAGS="-Werror" ..
     - name: build
-      run: cmake --build build
+      run: cmake --build build -- -j2
     - name: test
       run: cd build && ctest -V
