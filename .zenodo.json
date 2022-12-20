@@ -18,32 +18,37 @@
     ],
     "related_identifiers": [
         {
+            "identifier": "https://github.com/ant-uni-bremen/gr-symbolmapping",
+            "relation": "isSupplementTo",
+            "resource_type": "software"
+        },
+        {
             "scheme": "doi",
             "identifier": "10.1109/18.669123",
-            "relation": "isDocumentedBy",
+            "relation": "references",
             "resource_type": "publication-article"
         },
         {
             "scheme": "doi",
             "identifier": "10.1109/ICC.2002.996940",
-            "relation": "isDocumentedBy",
+            "relation": "references",
             "resource_type": "publication-conferencepaper"
         },
         {
             "scheme": "doi",
             "identifier": "10.1109/ACSSC.2004.1399245",
-            "relation": "isDocumentedBy",
+            "relation": "references",
             "resource_type": "publication-conferencepaper"
         },
         {
             "scheme": "doi",
             "identifier": "10.1109/EuCNC.2016.7560996",
-            "relation": "isDocumentedBy",
+            "relation": "references",
             "resource_type": "publication-conferencepaper"
         },
         {
             "identifier": "https://www.etsi.org/deliver/etsi_ts/138200_138299/138211/16.02.00_60/ts_138211v160200p.pdf",
-            "relation": "isDocumentedBy",
+            "relation": "references",
             "resource_type": "publication-report"
         }
     ],
