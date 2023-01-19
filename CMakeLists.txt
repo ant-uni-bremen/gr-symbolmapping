@@ -32,7 +32,7 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 # Set the version information here
 set(VERSION_MAJOR 1)
 set(VERSION_API   0)
-set(VERSION_ABI   0)
+set(VERSION_ABI   3)
 set(VERSION_PATCH git)
 
 cmake_policy(SET CMP0011 NEW)
@@ -51,11 +51,11 @@ if((CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR
 endif()
 
 IF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    SET(CMAKE_CXX_STANDARD 11)
+    SET(CMAKE_CXX_STANDARD 17)
 ELSEIF(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    SET(CMAKE_CXX_STANDARD 11)
+    SET(CMAKE_CXX_STANDARD 17)
 ELSEIF(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    SET(CMAKE_CXX_STANDARD 11)
+    SET(CMAKE_CXX_STANDARD 17)
 ELSE()
     message(WARNING "C++ standard could not be set because compiler is not GNU, Clang or MSVC.")
 ENDIF()
@@ -120,11 +120,6 @@ if(APPLE)
 endif(APPLE)
 
 ########################################################################
-# Find gnuradio build dependencies
-########################################################################
-find_package(Doxygen)
-
-########################################################################
 # PyBind11 Related
 ########################################################################
 
@@ -135,14 +130,15 @@ execute_process(
     OUTPUT_VARIABLE PYTHON_NUMPY_INCLUDE_DIR)
 
 ########################################################################
-# Setup doxygen option
+# Setup Doxygen
 ########################################################################
+find_package(Doxygen)
 if(DOXYGEN_FOUND)
     option(ENABLE_DOXYGEN "Build docs using Doxygen" ON)
 else(DOXYGEN_FOUND)
     option(ENABLE_DOXYGEN "Build docs using Doxygen" OFF)
 endif(DOXYGEN_FOUND)
-
+ 
 ########################################################################
 # Create uninstall target
 ########################################################################

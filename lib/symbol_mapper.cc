@@ -14,6 +14,11 @@
 #include <iostream>
 #include <stdexcept>
 
+// Define these constants because `std::sqrt` is not defined as constexpr.
+constexpr float SQRT_2 = 1.41421356237f;
+constexpr float SQRT_10 = 3.16227766017f;
+constexpr float SQRT_42 = 6.48074069841f;
+constexpr float SQRT_170 = 13.0384048104f;
 
 float lin2db(const float snr_lin) { return 10.0f * std::log10(snr_lin); }
 
@@ -99,7 +104,7 @@ void SymbolMapping::generate_bpsk_gray_constellation()
 void SymbolMapping::generate_qpsk_gray_constellation()
 {
     // LTE constellation
-    float scale = 1.0f / std::sqrt(2.0f);
+    constexpr float scale = 1.0f / SQRT_2; // std::sqrt(2.0f);
     _constellation[0] = fcmplx(1.0f * scale, 1.0f * scale);
     _constellation[1] = fcmplx(1.0f * scale, -1.0f * scale);
     _constellation[2] = fcmplx(-1.0f * scale, 1.0f * scale);
@@ -111,7 +116,7 @@ void SymbolMapping::generate_8psk_gray_constellation()
     // This Constellation is taken from the DVB-S2 standard
     // ETSI EN 302 307 V1.2.1 (2009-08), Sec. 5.4.2, p26
     // http://www.etsi.org/deliver/etsi_en/302300_302399/302307/01.02.01_60/en_302307v010201p.pdf
-    float scale = 1.0f / std::sqrt(2.0f);
+    constexpr float scale = 1.0f / SQRT_2; // std::sqrt(2.0f);
     _constellation[0] = fcmplx(1.0f * scale, 1.0f * scale);
     _constellation[1] = fcmplx(1.0f, 0.0f);
     _constellation[2] = fcmplx(-1.0f, 0.0f);
@@ -136,7 +141,7 @@ void SymbolMapping::generate_16qam_constellation()
 void SymbolMapping::generate_16qam_gray_constellation()
 {
     // LTE constellation
-    float scale = 1.0f / std::sqrt(10.0f);
+    constexpr float scale = 1.0f / SQRT_10; // std::sqrt(10.0f);
     for (unsigned i = 0; i < _constellation_size; ++i) {
         float b0 = 1.0f - 2.0f * float((i >> 3) & 0x01);
         float b1 = 1.0f - 2.0f * float((i >> 2) & 0x01);
@@ -148,7 +153,7 @@ void SymbolMapping::generate_16qam_gray_constellation()
 
 void SymbolMapping::generate_16qam_boronka_constellation()
 {
-    float scale = 1.0f / std::sqrt(10.0f);
+    constexpr float scale = 1.0f / SQRT_10; // std::sqrt(10.0f);
     _constellation[0] = scale * fcmplx(1.0f, 3.0f);
     _constellation[1] = scale * fcmplx(3.0f, -3.0f);
     _constellation[2] = scale * fcmplx(-1.0f, -3.0f);
@@ -172,7 +177,7 @@ void SymbolMapping::generate_16qam_boronka_constellation()
 
 void SymbolMapping::generate_16qam_carson_constellation()
 {
-    float scale = 1.0f / std::sqrt(10.0f);
+    constexpr float scale = 1.0f / SQRT_10; // std::sqrt(10.0f);
     _constellation[0] = scale * fcmplx(3.0f, 3.0f);
     _constellation[1] = scale * fcmplx(-3.0f, -3.0f);
     _constellation[2] = scale * fcmplx(-1.0f, 3.0f);
@@ -197,8 +202,8 @@ void SymbolMapping::generate_16qam_carson_constellation()
 void SymbolMapping::generate_64qam_gray_constellation()
 {
     // NR/LTE constellation
-    float scale = 1.0f / std::sqrt(42.0f);
-    float q_lut[] = { 3.0f, 1.0f, 5.0f, 7.0f };
+    constexpr float scale = 1.0f / SQRT_42; // ::sqrt(42.0f);
+    constexpr float q_lut[] = { 3.0f, 1.0f, 5.0f, 7.0f };
     for (unsigned i = 0; i < _constellation_size; ++i) {
         float c0 = 1.0f - 2.0f * float((i >> 5) & 0x01);
         float c1 = 1.0f - 2.0f * float((i >> 4) & 0x01);
@@ -215,7 +220,7 @@ void SymbolMapping::generate_64qam_gray_constellation()
 void SymbolMapping::generate_256qam_gray_constellation()
 {
     // NR/LTE constellation
-    float scale = 1.0f / std::sqrt(170.0f);
+    constexpr float scale = 1.0f / SQRT_170; // std::sqrt(170.0f);
     // float q_lut[] = { 3.0f, 1.0f, 5.0f, 7.0f };
     for (unsigned i = 0; i < _constellation_size; ++i) {
         int b0 = int((i >> 7) & 0x01);
@@ -547,7 +552,7 @@ void SymbolMapping::demap_llrs_vec_qpsk(float* llrs,
                                         const float* snr_lin,
                                         const unsigned num_symbols)
 {
-    constexpr float scale = std::sqrt(2.0f);
+    constexpr float scale = SQRT_2; // std::sqrt(2.0f);
     const float* rx_values = (const float*)rx_symbols;
     for (unsigned i = 0; i < num_symbols; ++i) {
         const float scaling_factor = scale * *snr_lin++;
@@ -577,7 +582,7 @@ void SymbolMapping::demap_llrs_8psk(float* llrs,
     // Assume E_s=1, a=1
     //    const float eta = 4.0f / snr_lin; // 4 * a * sqrt(E_s) / N_0
     //    const float delta = 8.0f / snr_lin; // 8 * a^2 * E_s / N_0
-    constexpr float decision_bound = 2.0f / std::sqrt(10.0f);
+    constexpr float decision_bound = 2.0f / SQRT_10; // std::sqrt(10.0f);
     const float scaling_factor = snr_lin * decision_bound;
     for (unsigned i = 0; i < num_symbols; ++i) {
         const fcmplx sym = *rx_symbols++;
@@ -596,7 +601,7 @@ void SymbolMapping::demap_llrs_vec_16qam(float* llrs,
                                          const float* snr_lin,
                                          const unsigned num_symbols)
 {
-    constexpr float decision_bound = 2.0f / std::sqrt(10.0f);
+    constexpr float decision_bound = 2.0f / SQRT_10; // std::sqrt(10.0f);
     constexpr float scale = decision_bound;
     //    const float* rx_values = (const float*) rx_symbols;
     for (unsigned i = 0; i < num_symbols; ++i) {
@@ -620,7 +625,7 @@ void SymbolMapping::demap_llrs_16qam(float* llrs,
     // Assume E_s=1, a=1
     //    const float eta = 4.0f / snr_lin; // 4 * a * sqrt(E_s) / N_0
     //    const float delta = 8.0f / snr_lin; // 8 * a^2 * E_s / N_0
-    constexpr float decision_bound = 2.0f / std::sqrt(10.0f);
+    constexpr float decision_bound = 2.0f / SQRT_10; // std::sqrt(10.0f);
     const float scaling_factor = snr_lin * decision_bound;
     //    const float* rx_values = (const float*) rx_symbols;
     for (unsigned i = 0; i < num_symbols; ++i) {
@@ -639,7 +644,7 @@ void SymbolMapping::demap_llrs_vec_64qam(float* llrs,
                                          const float* snr_lin,
                                          const unsigned num_symbols)
 {
-    constexpr float normalization_factor = 2.0f / std::sqrt(42.0f);
+    constexpr float normalization_factor = 2.0f / SQRT_42; // std::sqrt(42.0f);
     constexpr float decision_bound1 = 2.0f * normalization_factor;
     constexpr float decision_bound2 = 1.0f * normalization_factor;
 
@@ -664,7 +669,7 @@ void SymbolMapping::demap_llrs_64qam(float* llrs,
                                      const unsigned num_symbols,
                                      const float snr_lin)
 {
-    constexpr float normalization_factor = 2.0f / std::sqrt(42.0f);
+    constexpr float normalization_factor = 2.0f / SQRT_42; // std::sqrt(42.0f);
     constexpr float decision_bound1 = 2.0f * normalization_factor;
     constexpr float decision_bound2 = 1.0f * normalization_factor;
     const float scaling_factor = snr_lin * normalization_factor;
@@ -689,7 +694,7 @@ void inline demap_256qam_symbol(float* llrs,
                                 const fcmplx symbol,
                                 const float scaling_factor)
 {
-    constexpr float normalization_factor = 2.0f / std::sqrt(170.0f);
+    constexpr float normalization_factor = 2.0f / SQRT_170; // std::sqrt(170.0f);
     constexpr float decision_bound1 = 4.0f * normalization_factor;
     constexpr float decision_bound2 = 2.0f * normalization_factor;
     constexpr float decision_bound3 = 1.0f * normalization_factor;
@@ -722,7 +727,7 @@ void SymbolMapping::demap_llrs_vec_256qam(float* llrs,
                                           const float* snr_lin,
                                           const unsigned num_symbols)
 {
-    constexpr float normalization_factor = 2.0f / std::sqrt(170.0f);
+    constexpr float normalization_factor = 2.0f / SQRT_170; // std::sqrt(170.0f);
 
     for (unsigned i = 0; i < num_symbols; ++i) {
         const float scaling_factor = normalization_factor * *snr_lin++;
@@ -737,7 +742,7 @@ void SymbolMapping::demap_llrs_256qam(float* llrs,
                                       const unsigned num_symbols,
                                       const float snr_lin)
 {
-    constexpr float normalization_factor = 2.0f / std::sqrt(170.0f);
+    constexpr float normalization_factor = 2.0f / SQRT_170; // std::sqrt(170.0f);
     const float scaling_factor = snr_lin * normalization_factor;
 
     for (unsigned i = 0; i < num_symbols; ++i) {

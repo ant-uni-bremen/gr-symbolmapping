@@ -10,15 +10,20 @@
 # Setup dependencies
 ########################################################################
 find_package(Doxygen)
+if(NOT Doxygen_FOUND)
+    message(STATUS "Doxygen not found. Disable building docs...")
+    set(ENABLE_DOXYGEN OFF)
+endif(NOT Doxygen_FOUND)
 
 ########################################################################
 # Begin conditional configuration
 ########################################################################
 if(ENABLE_DOXYGEN)
-
+	message(STATUS "Build docs with Doxygen...")
 ########################################################################
 # Add subdirectories
 ########################################################################
 add_subdirectory(doxygen)
-
+else(ENABLE_DOXYGEN)
+    message(STATUS "Skip building docs...")
 endif(ENABLE_DOXYGEN)
