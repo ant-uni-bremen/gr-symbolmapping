@@ -18,6 +18,7 @@ source:
   git_url: {{ environ.get('FEEDSTOCK_ROOT', "../..") }}  # [os.environ.get("CI")]
 
 build:
+  skip: True  # [win]
   number: 0
 
 requirements:
