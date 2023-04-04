@@ -12,12 +12,13 @@ import numpy as np
 def get_bit_bins(constellation_order):
     n_points = 2 ** constellation_order
     bit_ints = np.arange(n_points)
-    return [np.binary_repr(bit_ints[i], width=constellation_order)
-                for i in range(n_points)]
+    return [
+        np.binary_repr(bit_ints[i], width=constellation_order) for i in range(n_points)
+    ]
 
 
 def generate_bpsk_gray_constellation():
-    return np.array([1, -1]), ['0', '1']
+    return np.array([1, -1]), ["0", "1"]
 
 
 def generate_qpsk_gray_constellation():
@@ -29,7 +30,7 @@ def generate_qpsk_gray_constellation():
         b = list(bit_bins[i])
         c = [1 - 2 * int(j) for j in b]
         constellation[i] = c[0] + 1j * c[1]
-    constellation /= np.sqrt(2.)
+    constellation /= np.sqrt(2.0)
     return constellation, bit_bins
 
 
@@ -39,15 +40,16 @@ def generate_8psk_gray_constellation():
     bit_bins = get_bit_bins(constellation_order)
     constellation = np.zeros(n_points, dtype=complex)
     scale = 1.0 / np.sqrt(2.0)
-    constellation[0] = complex(  1.0 * scale,  1.0 * scale)
-    constellation[1] = complex(  1.0        ,  0.0        )
-    constellation[2] = complex( -1.0        ,  0.0        )
-    constellation[3] = complex( -1.0 * scale, -1.0 * scale)
-    constellation[4] = complex(  0.0        ,  1.0        )
-    constellation[5] = complex(  1.0 * scale, -1.0 * scale)
-    constellation[6] = complex( -1.0 * scale,  1.0 * scale)
-    constellation[7] = complex(  0.0 * scale, -1.0        )
+    constellation[0] = complex(1.0 * scale, 1.0 * scale)
+    constellation[1] = complex(1.0, 0.0)
+    constellation[2] = complex(-1.0, 0.0)
+    constellation[3] = complex(-1.0 * scale, -1.0 * scale)
+    constellation[4] = complex(0.0, 1.0)
+    constellation[5] = complex(1.0 * scale, -1.0 * scale)
+    constellation[6] = complex(-1.0 * scale, 1.0 * scale)
+    constellation[7] = complex(0.0 * scale, -1.0)
     return constellation, bit_bins
+
 
 def generate_16qam_gray_constellation():
     constellation_order = 4
@@ -60,7 +62,7 @@ def generate_16qam_gray_constellation():
         re = c[0] * (1 + 2 * int(b[2]))
         im = c[1] * (1 + 2 * int(b[3]))
         constellation[i] = re + 1j * im
-    constellation /= np.sqrt(10.)
+    constellation /= np.sqrt(10.0)
     return constellation, bit_bins
 
 
@@ -76,7 +78,7 @@ def generate_64qam_gray_constellation():
         re = (1 - 2 * c[0]) * q_lut[2 * c[2] + c[4]]
         im = (1 - 2 * c[1]) * q_lut[2 * c[3] + c[5]]
         constellation[i] = re + 1j * im
-    constellation /= np.sqrt(42.)
+    constellation /= np.sqrt(42.0)
     return constellation, bit_bins
 
 
@@ -88,11 +90,11 @@ def generate_256qam_gray_constellation():
     for i in range(n_points):
         b = list(bit_bins[i])
         c = [int(j) for j in b]
-        cz = 1. - 2. * np.array(c)
+        cz = 1.0 - 2.0 * np.array(c)
         re = cz[0] * (8 - cz[2] * (4 - cz[4] * (2 - cz[6])))
         im = cz[1] * (8 - cz[3] * (4 - cz[5] * (2 - cz[7])))
         constellation[i] = re + 1j * im
-    constellation /= np.sqrt(170.)
+    constellation /= np.sqrt(170.0)
     return constellation, bit_bins
 
 
@@ -116,12 +118,28 @@ def generate_gray_constellation(constellation_order):
 def generate_16qam_boronka_constellation():
     constellation_order = 4
     bit_bins = get_bit_bins(constellation_order)
-    constellation = np.array([ 1.+3.j,  3.-3.j, -1.-3.j,  1.+1.j,
-                              -3.+1.j,  3.+1.j,  1.-1.j, -3.-1.j,
-                               3.+3.j, -1.-1.j, -1.+1.j, -3.-3.j,
-                               1.-3.j, -1.+3.j, -3.+3.j,  3.-1.j],
-                             dtype=complex)
-    constellation /= np.sqrt(10.)
+    constellation = np.array(
+        [
+            1.0 + 3.0j,
+            3.0 - 3.0j,
+            -1.0 - 3.0j,
+            1.0 + 1.0j,
+            -3.0 + 1.0j,
+            3.0 + 1.0j,
+            1.0 - 1.0j,
+            -3.0 - 1.0j,
+            3.0 + 3.0j,
+            -1.0 - 1.0j,
+            -1.0 + 1.0j,
+            -3.0 - 3.0j,
+            1.0 - 3.0j,
+            -1.0 + 3.0j,
+            -3.0 + 3.0j,
+            3.0 - 1.0j,
+        ],
+        dtype=complex,
+    )
+    constellation /= np.sqrt(10.0)
     assert constellation.size == 2 ** constellation_order
     return constellation, bit_bins
 
@@ -129,38 +147,57 @@ def generate_16qam_boronka_constellation():
 def generate_16qam_carson_constellation():
     constellation_order = 4
     bit_bins = get_bit_bins(constellation_order)
-    constellation = np.array([ 3.+3.j, -3.-3.j, -1.+3.j,  1.-3.j,
-                              -3.+1.j,  3.-1.j,  1.+1.j, -1.-1.j,
-                               1.-1.j, -1.+1.j, -3.-1.j,  3.+1.j,
-                              -1.-3.j,  1.+3.j,  3.-3.j, -3.+3.j],
-                             dtype=complex)
-    constellation /= np.sqrt(10.)
+    constellation = np.array(
+        [
+            3.0 + 3.0j,
+            -3.0 - 3.0j,
+            -1.0 + 3.0j,
+            1.0 - 3.0j,
+            -3.0 + 1.0j,
+            3.0 - 1.0j,
+            1.0 + 1.0j,
+            -1.0 - 1.0j,
+            1.0 - 1.0j,
+            -1.0 + 1.0j,
+            -3.0 - 1.0j,
+            3.0 + 1.0j,
+            -1.0 - 3.0j,
+            1.0 + 3.0j,
+            3.0 - 3.0j,
+            -3.0 + 3.0j,
+        ],
+        dtype=complex,
+    )
+    constellation /= np.sqrt(10.0)
     assert constellation.size == 2 ** constellation_order
     return constellation, bit_bins
 
 
-def generate_constellation(constellation_order, constellation_type='GRAY'):
+def generate_constellation(constellation_order, constellation_type="GRAY"):
     constellation_type = constellation_type.upper()
     if constellation_order != 4:
-        assert 'GRAY' in constellation_type
+        assert "GRAY" in constellation_type
     else:
         constellation_type = constellation_type
-        cstl_types = ['GRAY', 'CARSON', 'BORONKA']
+        cstl_types = ["GRAY", "CARSON", "BORONKA"]
         t = [i for i in cstl_types if constellation_type in i]
         if len(t) == 1:
             constellation_type = t[0]
         else:
-            raise ValueError(f'Constellation type: "{constellation_type}" is not supported!')
+            raise ValueError(
+                f'Constellation type: "{constellation_type}" is not supported!'
+            )
 
-    if 'GRAY' in constellation_type:
+    if "GRAY" in constellation_type:
         return generate_gray_constellation(constellation_order)
-    elif 'BORONKA' in constellation_type:
+    elif "BORONKA" in constellation_type:
         return generate_16qam_boronka_constellation()
-    elif 'CARSON' in constellation_type:
+    elif "CARSON" in constellation_type:
         return generate_16qam_carson_constellation()
     else:
-        raise ValueError(f'Constellation type: "{constellation_type}" is not supported!')
-
+        raise ValueError(
+            f'Constellation type: "{constellation_type}" is not supported!'
+        )
 
 
 def pack_bits(bits, n_packed):
@@ -179,23 +216,29 @@ def map_to_constellation(bits, constellation):
 def main():
     import matplotlib.pyplot as plt
     from latex_plot_magic import set_size
+
     latex_textwidth = 327.20668  # pt
     fig_size = set_size(latex_textwidth)
-    fig = plt.figure(figsize= (fig_size[0], fig_size[0] * 3. / 4.))
+    fig = plt.figure(figsize=(fig_size[0], fig_size[0] * 3.0 / 4.0))
 
     markersize = 40
 
     cstl, bits = generate_constellation(4)
-    plt.scatter(cstl.real, cstl.imag, marker='o', s=markersize, label='16QAM')
+    plt.scatter(cstl.real, cstl.imag, marker="o", s=markersize, label="16QAM", c="C2")
     for c, b in zip(cstl, bits):
         pos = (c.real, c.imag)
-        plt.annotate(b, pos, xytext=(-10, 5), textcoords='offset points',)
+        plt.annotate(
+            b,
+            pos,
+            xytext=(-10, 5),
+            textcoords="offset points",
+        )
 
     cstl, bits = generate_constellation(2)
-    plt.scatter(cstl.real, cstl.imag, marker='x', s=markersize, label='QPSK')
+    plt.scatter(cstl.real, cstl.imag, marker="x", s=markersize, label="QPSK", c="C1")
     for c, b in zip(cstl, bits):
         pos = (c.real, c.imag)
-        plt.annotate(b, pos, xytext=(-5, 5), textcoords='offset points')
+        plt.annotate(b, pos, xytext=(-5, 5), textcoords="offset points")
 
     # cstl, bits = generate_constellation(6)
     # plt.scatter(cstl.real, cstl.imag, marker='o', s=markersize, label='64QAM')
@@ -204,16 +247,23 @@ def main():
     #     plt.annotate(b, pos, xytext=(-10, 5), textcoords='offset points',)
 
     plt.grid()
-    plt.legend(fontsize='small')
-    plt.xlabel('Inphase')
-    plt.ylabel('Quadrature')
-    # plt.ylim((-1., 1.11))
+    plt.legend(fontsize="small")
+    plt.xlabel("Inphase", fontsize="small")
+    plt.ylabel("Quadrature", fontsize="small")
+    plt.ylim((-1.05, 1.11))
+    plt.xlim((-1.05, 1.05))
     ticks = plt.yticks()
-    plt.yticks((-1., -.5, 0.0, .5, 1.))
+    plt.yticks((-1.0, -0.5, 0.0, 0.5, 1.0), fontsize="small")
+    plt.xticks((-1.0, -0.5, 0.0, 0.5, 1.0), fontsize="small")
     plt.tight_layout()
-    # plt.savefig('constellation_qpsk_16qam.pgf')
+    plt.savefig(
+        "constellation_qpsk_16qam.pgf",
+        bbox_inches="tight",
+        pad_inches=0,
+        transparent=True,
+    )
     plt.show()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
